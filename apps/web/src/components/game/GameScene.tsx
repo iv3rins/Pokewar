@@ -1,5 +1,5 @@
 import type { ChatMessage, GameProjection, RoomProjection } from '@pokewar/protocol';
-import { Clock3, Heart, LogOut, Shield, Spade, Users, X } from 'lucide-react';
+import { Clock3, Heart, LogOut, Shield, Spade, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { GameAction } from '../../services/roomSocket.js';
 import { avatarAsset } from '../../services/avatar.js';
@@ -540,8 +540,12 @@ function TableScene({
         <div className="table-header-actions">
           <div className="scene-phase current-turn-signal">
             <Clock3 size={18} aria-hidden="true" />
-            {current?.id === selfId ? '你的回合' : `${current?.displayName ?? '牌桌'}的回合`}
-            {seconds === null ? '' : ` · ${String(seconds)}s`}
+            <span>
+              {current?.id === selfId
+                ? '轮到你行动'
+                : `等待 ${current?.displayName ?? '其他玩家'} 行动`}
+              {seconds === null ? '' : ` · ${String(seconds)}s`}
+            </span>
           </div>
           <BattleHistory game={game} />
           <button
@@ -572,11 +576,7 @@ function TableScene({
         ))}
       </section>
       <section className="battle-stage" aria-label="中央战斗舞台" data-tutorial="battle">
-        <Users size={28} aria-hidden="true" />
-        <h2>
-          {current?.id === selfId ? '轮到你行动' : isPve ? '等待机器人行动' : '等待其他玩家行动'}
-        </h2>
-        <p>{noticeText(game)}</p>
+        <p className="battle-stage-notice">{noticeText(game)}</p>
         <CombatPresentation game={game} />
         <div className="event-ribbon" role="status" aria-live="polite" data-tutorial="combination">
           {selection.message}

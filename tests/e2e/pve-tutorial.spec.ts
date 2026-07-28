@@ -69,6 +69,42 @@ test('desktop table keeps the hand and play controls inside the viewport', async
   expect(geometry.scrollHeight).toBeLessThanOrEqual(geometry.viewportHeight);
 });
 
+for (const viewport of [
+  { width: 1365, height: 720 },
+  { width: 1365, height: 945 },
+]) {
+  test(`combat presentation remains complete at ${String(viewport.width)}x${String(viewport.height)}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: '私人房间' })).toBeVisible();
+    await page.getByRole('button', { name: '快速战 1 名角色' }).last().click();
+    await page.getByRole('button', { name: '开始人机对战' }).click();
+    const guide = page.getByRole('complementary', { name: 'PVE 新手教学' });
+    if (await guide.isVisible()) await guide.getByRole('button', { name: '暂时关闭教学' }).click();
+    const geometry = await page.evaluate(() => {
+      const battle = document.querySelector<HTMLElement>('.battle-stage');
+      const presentation = document.querySelector<HTMLElement>('.combat-presentation');
+      const tray = document.querySelector<HTMLElement>('.self-tray');
+      const hand = document.querySelector<HTMLElement>('.hand-tray');
+      if (!battle || !presentation || !tray || !hand) throw new Error('LAYOUT_MISSING');
+      return {
+        battleTop: battle.getBoundingClientRect().top,
+        presentationTop: presentation.getBoundingClientRect().top,
+        presentationBottom: presentation.getBoundingClientRect().bottom,
+        trayTop: tray.getBoundingClientRect().top,
+        handBottom: hand.getBoundingClientRect().bottom,
+        viewportHeight: window.innerHeight,
+      };
+    });
+    expect(geometry.battleTop).toBeGreaterThanOrEqual(0);
+    expect(geometry.presentationTop).toBeGreaterThanOrEqual(geometry.battleTop);
+    expect(geometry.presentationBottom).toBeLessThanOrEqual(geometry.trayTop);
+    expect(geometry.handBottom).toBeLessThanOrEqual(geometry.viewportHeight);
+  });
+}
+
 test('temporary close lasts for reloads in the current tab without marking completion', async ({
   page,
 }) => {

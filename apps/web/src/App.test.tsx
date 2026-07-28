@@ -413,7 +413,7 @@ describe('FateDeck home', () => {
     mocks.handlers?.onRoom(humanPlayingRoom('private'));
     expect(await screen.findByRole('heading', { name: '私人牌桌' })).toBeInTheDocument();
     expect(screen.getByLabelText('其他玩家')).toBeInTheDocument();
-    expect(screen.getByText('等待其他玩家行动')).toBeInTheDocument();
+    expect(screen.getByText(/等待 赤曜先锋#B002 行动/)).toBeInTheDocument();
     expect(screen.queryByText('PVE 牌桌')).not.toBeInTheDocument();
     expect(screen.queryByRole('complementary', { name: 'PVE 新手教学' })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: '退出对局' }));
