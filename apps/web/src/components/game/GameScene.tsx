@@ -193,6 +193,21 @@ function StatusBars({ character }: { readonly character: Character }) {
   );
 }
 
+function SuitBadge({
+  suit,
+  compact = false,
+}: {
+  readonly suit: Character['suit'];
+  readonly compact?: boolean;
+}) {
+  return (
+    <span className={`suit-badge suit-${suit}${compact ? ' is-compact' : ''}`}>
+      <b aria-hidden="true">{SUIT_LABEL[suit].slice(0, 1)}</b>
+      <span>{compact ? SUIT_LABEL[suit].slice(2) : SUIT_LABEL[suit]}</span>
+    </span>
+  );
+}
+
 function PlayerEmblem({
   character,
   bot = false,
@@ -240,9 +255,8 @@ function OpponentHud({
       </div>
       {player.activeCharacter ? (
         <>
-          <span className={`opponent-rank suit-${player.activeCharacter.suit}`}>
-            {player.activeCharacter.rank} · {SUIT_LABEL[player.activeCharacter.suit]}
-          </span>
+          <span className="opponent-rank">{player.activeCharacter.rank}</span>
+          <SuitBadge suit={player.activeCharacter.suit} compact />
           <StatusBars character={player.activeCharacter} />
         </>
       ) : null}
@@ -621,9 +635,10 @@ function TableScene({
               <span>你的角色 · {self.handCount} 张手牌</span>
               <strong>{self.displayName}</strong>
               <small>
-                {self.activeCharacter.rank} · {SUIT_LABEL[self.activeCharacter.suit]}
+                {self.activeCharacter.rank}
                 {isTurn ? ' · 当前回合' : ''}
               </small>
+              <SuitBadge suit={self.activeCharacter.suit} compact />
             </div>
             <StatusBars character={self.activeCharacter} />
           </div>

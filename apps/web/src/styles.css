@@ -1973,9 +1973,78 @@ a:focus-visible {
   color: rgba(255, 255, 255, 0.62);
   font-size: 10px;
 }
-.opponent-rank,
+.opponent-rank {
+  grid-column: 1 / 2;
+  font-size: 13px !important;
+  font-weight: 900;
+}
 .opponent-player .status-bars {
   grid-column: 1 / -1;
+}
+.suit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 3px 7px;
+  border: 1px solid currentColor;
+  background: currentColor;
+  color: var(--color-table-deep);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+}
+.suit-badge b {
+  color: inherit;
+  font-size: 16px;
+}
+.suit-badge span {
+  color: var(--color-table-deep);
+  font-size: 9px;
+  font-weight: 900;
+}
+.suit-badge.suit-spade {
+  background: #d8c5ff;
+  color: #7051a6;
+}
+.suit-badge.suit-heart {
+  background: #ff6b78;
+  color: #8f1827;
+}
+.suit-badge.suit-diamond {
+  background: #ffc95c;
+  color: #9a6510;
+}
+.suit-badge.suit-club {
+  background: #64e2dc;
+  color: #08726e;
+}
+.opponent-player > .suit-badge {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: start;
+  min-height: 30px;
+}
+.suit-badge.is-compact span {
+  font-size: 8px;
+}
+.self-player-hud {
+  position: relative;
+}
+.self-player-hud > .suit-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.combatant-card {
+  overflow: hidden;
+}
+.combat-suit-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
 }
 .battle-stage {
   display: grid;
@@ -2041,7 +2110,8 @@ a:focus-visible {
   align-items: flex-end;
   gap: 8px;
   overflow-x: auto;
-  padding: 16px 2px 2px;
+  overflow-y: hidden;
+  padding: 20px 6px 4px;
 }
 .hand-card {
   width: 70px;
@@ -2166,7 +2236,6 @@ a:focus-visible {
 @keyframes fused-rgb-breathe {
   50% {
     filter: brightness(1.45);
-    transform: rotate(6deg) scale(1.035);
   }
 }
 .hand-card.is-fused::before,

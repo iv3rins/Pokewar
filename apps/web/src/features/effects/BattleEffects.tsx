@@ -120,14 +120,15 @@ function CombatantCard({
         <span>{role === 'actor' ? '攻击者' : role === 'target' ? '受击者' : '当前行动'}</span>
         <small>{player.handCount} 张手牌</small>
       </header>
-      <div className={`combatant-rank suit-${character.suit}`}>
+      <div className="combatant-rank">
         <strong>{character.rank}</strong>
-        <i>{SUIT_SYMBOL[character.suit]}</i>
       </div>
+      <span className={`suit-badge combat-suit-badge suit-${character.suit}`}>
+        <b aria-hidden="true">{SUIT_SYMBOL[character.suit]}</b>
+        <span>{SUIT_LABEL[character.suit]}</span>
+      </span>
       <h3>{player.displayName}</h3>
-      <p>
-        {character.rank} · {SUIT_LABEL[character.suit]}
-      </p>
+      <p>{character.rank}</p>
       <div className="combatant-status">
         <CombatMeter label="HP" value={character.hp} max={maxHp} previous={previousHp} kind="hp" />
         <CombatMeter
