@@ -43,10 +43,16 @@ if ! command -v node >/dev/null 2>&1 || [[ "$(node -p 'Number(process.versions.n
   apt-get update
   apt-get install -y nodejs
 fi
-corepack enable
-corepack prepare pnpm@11.17.0 --activate
+# Use a real global pnpm installation instead of Corepack's per-user cache.
+# Corepack can leave a partial download when HOME points at the deployment directory.
+corepack disable >/dev/null 2>&1 || true
+npm install --global --no-fund --no-audit pnpm@11.17.0
 PNPM_BIN="$(command -v pnpm)"
 [[ -x "$PNPM_BIN" ]] || fail "pnpm 安装失败"
+PNPM_REAL_BIN="$(readlink -f "$PNPM_BIN")"
+[[ "$PNPM_REAL_BIN" != *corepack* ]] || fail "pnpm 仍由 Corepack shim 提供，请检查 Node.js 全局 npm 路径"
+PNPM_BIN="$PNPM_REAL_BIN"
+"$PNPM_BIN" --version | grep -qx '11.17.0' || fail "pnpm 版本不是 11.17.0"
 
 log "创建服务用户与应用目录"
 if ! id "$APP_USER" >/dev/null 2>&1; then
