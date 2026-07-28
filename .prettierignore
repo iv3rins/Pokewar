@@ -1,0 +1,10 @@
+node_modules
+coverage
+dist
+pnpm-lock.yaml
+skills-lock.json
+.references-analysis
+.pi-subagents
+.tmp
+playwright-report
+test-results
