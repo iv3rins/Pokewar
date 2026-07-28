@@ -1726,6 +1726,7 @@ a:focus-visible {
   .hand-card.is-dealing {
     animation: none !important;
   }
+  .deal-deck,
   .suit-orbit,
   .orbit-card,
   .identity-loading > i {
@@ -1733,6 +1734,10 @@ a:focus-visible {
   }
   .orbit-card {
     margin-top: 0 !important;
+  }
+  .hand-card.is-fused::after,
+  .combat-play-card.is-fused::after {
+    animation: none;
   }
 }
 .game-shell {
@@ -2066,6 +2071,35 @@ a:focus-visible {
 .hand-card.is-dealing {
   animation: deal-card-in 420ms ease both;
 }
+.deal-deck {
+  position: fixed;
+  z-index: 40;
+  top: 92px;
+  right: clamp(24px, 6vw, 120px);
+  width: 58px;
+  aspect-ratio: 5 / 7;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--color-command);
+  background: var(--color-leather-dark);
+  color: var(--color-command);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.28);
+  font-size: 9px;
+  font-weight: 900;
+  animation: deck-pulse 900ms ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.deal-deck::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+@keyframes deck-pulse {
+  to {
+    transform: translateY(-4px) rotate(2deg);
+  }
+}
 @keyframes deal-card-in {
   from {
     opacity: 0;
@@ -2084,9 +2118,86 @@ a:focus-visible {
     900 18px/1 Arial Black,
     sans-serif;
 }
-.emblem-heart,
+.suit-spade,
+.emblem-spade {
+  color: #e9ddff;
+}
+.suit-heart,
+.emblem-heart {
+  color: #ff4c5f;
+}
+.suit-diamond,
 .emblem-diamond {
-  color: #b4232f;
+  color: #ffc247;
+}
+.suit-club,
+.emblem-club {
+  color: #59d6d1;
+}
+.hand-card.suit-joker {
+  color: var(--color-charcoal);
+}
+.hand-card.is-fused,
+.combat-play-card.is-fused {
+  position: relative;
+  isolation: isolate;
+  border-color: transparent;
+  box-shadow:
+    0 0 0 2px rgba(255, 80, 180, 0.72),
+    0 0 12px rgba(80, 220, 255, 0.56);
+}
+.hand-card.is-fused::after,
+.combat-play-card.is-fused::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -3px;
+  border: 2px solid transparent;
+  background: conic-gradient(from 0deg, #ff3b30, #ffcc00, #32d74b, #0a84ff, #af52de, #ff3b30)
+    border-box;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: fused-rgb-breathe 2.4s linear infinite;
+  pointer-events: none;
+}
+@keyframes fused-rgb-breathe {
+  50% {
+    filter: brightness(1.45);
+    transform: rotate(6deg) scale(1.035);
+  }
+}
+.hand-card.is-fused::before,
+.combat-play-card.is-fused::before {
+  content: 'RGB';
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  z-index: 2;
+  color: #fff;
+  background: rgba(35, 40, 11, 0.78);
+  font-size: 7px;
+  font-weight: 900;
+}
+.hp-meter i,
+.combat-meter-hp i {
+  background: #ff4055;
+}
+.shield-meter i,
+.combat-meter-shield i {
+  background: #35c9d0;
+}
+.status-line:first-child,
+.combat-meter-hp {
+  color: #ffdae0;
+}
+.status-line:first-child b,
+.combat-meter-hp + b {
+  color: #ff6170;
+  font-size: 10px;
+  font-weight: 900;
 }
 .status-bars {
   display: grid;

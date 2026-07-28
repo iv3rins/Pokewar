@@ -174,8 +174,16 @@ export function setupSocket(
           })
           .safeParse(payload);
         if (!parsed.success) return ack({ ok: false, code: 'INVALID_PAYLOAD' });
-        if (await memberships.get(identity.id))
-          return ack({ ok: false, code: 'MATCHMAKING_ROOM_CONFLICT' });
+        const existingRoomId = await memberships.get(identity.id);
+        if (existingRoomId) {
+          const existingRoom = await rooms.get(existingRoomId);
+          if (!existingRoom?.members.some((member) => member.identityId === identity.id)) {
+            // A crashed/expired room can leave its membership key behind. Repair it before allowing a new PVE room.
+            await memberships.delete(identity.id);
+          } else {
+            return ack({ ok: false, code: 'MATCHMAKING_ROOM_CONFLICT' });
+          }
+        }
         const room = await rooms.createPveRoom(
           identity,
           parsed.data.mode,

@@ -175,7 +175,7 @@ function PlayedGroup({ play }: { readonly play: BattleNotice }) {
       <div className="combat-play-cards">
         {cards.map((card, index) => (
           <article
-            className={`combat-play-card suit-${card.suit}`}
+            className={`combat-play-card suit-${card.suit}${card.fused ? ' is-fused' : ''}`}
             style={
               {
                 '--combat-card-index': index,

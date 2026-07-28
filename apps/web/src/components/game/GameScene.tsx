@@ -608,6 +608,11 @@ function TableScene({
           </div>
         </section>
       ) : null}
+      {dealing ? (
+        <div className="deal-deck" aria-hidden="true">
+          <span>牌堆</span>
+        </div>
+      ) : null}
       <section className="self-tray" aria-label="你的角色与手牌">
         {self?.activeCharacter ? (
           <div className={`self-player-hud${isTurn ? ' is-current' : ''}`}>
@@ -632,8 +637,8 @@ function TableScene({
             const selected = selectedIds.includes(card.id);
             return (
               <button
-                className={`hand-card${card.kind === 'physical' && (card.suit === 'heart' || card.suit === 'diamond') ? ' is-red' : ''}${selected ? ' is-selected' : ''}${dealing ? ' is-dealing' : ''}`}
-                style={dealing ? { animationDelay: `${String(cardIndex * 100)}ms` } : undefined}
+                className={`hand-card suit-${cardSuit(card) ?? 'joker'}${card.kind === 'fused' ? ' is-fused' : ''}${cardSuit(card) === 'heart' || cardSuit(card) === 'diamond' ? ' is-red' : ''}${selected ? ' is-selected' : ''}${dealing ? ' is-dealing' : ''}`}
+                style={dealing ? { animationDelay: `${String(cardIndex * 90)}ms` } : undefined}
                 type="button"
                 aria-pressed={selected}
                 disabled={!isTurn || disabled}
