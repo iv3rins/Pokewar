@@ -1,4 +1,10 @@
-import { composePublicName, NAME_NOUNS, NAME_PREFIXES } from '@pokewar/protocol';
+import {
+  avatarIdForIdentity,
+  composePublicName,
+  NAME_NOUNS,
+  NAME_PREFIXES,
+  type AvatarId,
+} from '@pokewar/protocol';
 import { createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
 
 const COOKIE_NAME = 'pokewar_guest';
@@ -9,6 +15,7 @@ export interface GuestIdentity {
   readonly kind: 'guest' | 'account' | 'bot';
   readonly nickname: string;
   readonly displayName: string;
+  readonly avatarId?: AvatarId;
 }
 
 export interface GuestIdentityStore {
@@ -53,7 +60,13 @@ export function createGuestIdentity(input: GuestIdentityInput = {}): GuestIdenti
   const noun = NAME_NOUNS[input.nounIndex ?? randomInt(NAME_NOUNS.length)];
   if (!prefix || !noun) throw new Error('GUEST_NAME_INDEX_OUT_OF_RANGE');
   const nickname = composePublicName(prefix, noun);
-  return { id, kind: 'guest', nickname, displayName: `${nickname}#${shortId(id)}` };
+  return {
+    id,
+    kind: 'guest',
+    nickname,
+    displayName: `${nickname}#${shortId(id)}`,
+    avatarId: avatarIdForIdentity(id),
+  };
 }
 
 export function createBotIdentity(id: string): GuestIdentity {
@@ -63,7 +76,13 @@ export function createBotIdentity(id: string): GuestIdentity {
   const noun = NAME_NOUNS[nounIndex];
   if (!prefix || !noun) throw new Error('BOT_NAME_INDEX_OUT_OF_RANGE');
   const nickname = composePublicName(prefix, noun);
-  return { id, kind: 'bot', nickname, displayName: `${nickname} [机器人]` };
+  return {
+    id,
+    kind: 'bot',
+    nickname,
+    displayName: `${nickname} [机器人]`,
+    avatarId: avatarIdForIdentity(id),
+  };
 }
 
 export function serializeGuestCookie(identityId: string, secret: string, secure: boolean): string {

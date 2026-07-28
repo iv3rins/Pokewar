@@ -1,4 +1,5 @@
 import {
+  avatarIdForIdentity,
   composePublicName,
   type LoginAccountInput,
   type RegisterAccountInput,
@@ -24,6 +25,7 @@ function accountIdentity(account: AccountRecord): GuestIdentity {
     kind: 'account',
     nickname: account.nickname,
     displayName: account.displayName,
+    avatarId: avatarIdForIdentity(account.identityId),
   };
 }
 

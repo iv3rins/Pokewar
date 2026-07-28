@@ -1,6 +1,7 @@
 import type { BattleNotice, GameProjection } from '@pokewar/protocol';
 import { History, Shield, X } from 'lucide-react';
 import { useState, type CSSProperties } from 'react';
+import { avatarAsset } from '../../services/avatar.js';
 import { useEffectQueue } from './useEffectQueue.js';
 import { nullCanvasAdapter } from './types.js';
 
@@ -120,6 +121,7 @@ function CombatantCard({
         <span>{role === 'actor' ? '攻击者' : role === 'target' ? '受击者' : '当前行动'}</span>
         <small>{player.handCount} 张手牌</small>
       </header>
+      <img className="combatant-avatar" src={avatarAsset(player.avatarId)} alt="" />
       <div className="combatant-rank">
         <strong>{character.rank}</strong>
       </div>

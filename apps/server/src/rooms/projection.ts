@@ -6,6 +6,7 @@ import type {
   HandEntity,
 } from '@pokewar/domain';
 import {
+  avatarIdForIdentity,
   roomProjectionSchema,
   type BattleNotice,
   type GameProjection,
@@ -25,6 +26,7 @@ interface PublicCharacter {
 interface PlayerProjection {
   readonly id: string;
   readonly displayName: string;
+  readonly avatarId?: string;
   readonly seat: number | null;
   readonly connected: boolean;
   readonly eliminated: boolean;
@@ -51,6 +53,7 @@ function projectPlayer(player: GamePlayer, viewerId: string): PlayerProjection {
   return {
     id: player.id,
     displayName: player.displayName,
+    avatarId: avatarIdForIdentity(player.id),
     seat: player.seat,
     connected: player.connected,
     eliminated: player.eliminated,
@@ -181,6 +184,7 @@ export function projectRoom(room: RoomState, viewerId: string): RoomProjection {
     members: room.members.map((member) => ({
       identityId: member.identityId,
       displayName: member.displayName,
+      avatarId: avatarIdForIdentity(member.identityId),
       ready: member.identityId === room.hostIdentityId ? true : member.ready,
       connected: member.connected,
       isSelf: member.identityId === viewerId,

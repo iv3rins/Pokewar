@@ -1,3 +1,4 @@
+import { avatarIdForIdentity } from '@pokewar/protocol';
 import {
   GUEST_IDENTITY_TTL_SECONDS,
   type GuestIdentity,
@@ -24,7 +25,11 @@ export class RedisGuestIdentityStore implements GuestIdentityStore {
     const stored = JSON.parse(value) as Omit<GuestIdentity, 'kind'> & {
       readonly kind?: GuestIdentity['kind'];
     };
-    return { ...stored, kind: stored.kind ?? 'guest' };
+    return {
+      ...stored,
+      kind: stored.kind ?? 'guest',
+      avatarId: stored.avatarId ?? avatarIdForIdentity(id),
+    };
   }
 
   async save(identity: GuestIdentity): Promise<void> {

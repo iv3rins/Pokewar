@@ -81,7 +81,6 @@ export function createPokeWarServer(
     response.json({
       service: 'pokewar-server',
       status: 'ok',
-      frontend: 'http://localhost:5173/',
       health: '/api/health',
     }),
   );

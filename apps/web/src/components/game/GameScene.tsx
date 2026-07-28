@@ -1,7 +1,8 @@
 import type { GameProjection, RoomProjection } from '@pokewar/protocol';
-import { Bot, Clock3, Heart, LogOut, Shield, Spade, Users, X } from 'lucide-react';
+import { Clock3, Heart, LogOut, Shield, Spade, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { GameAction } from '../../services/roomSocket.js';
+import { avatarAsset } from '../../services/avatar.js';
 import { audioEngine } from '../../services/audio.js';
 import { hasFinishedPveTutorial, TutorialGuide } from './TutorialGuide.js';
 import {
@@ -208,23 +209,6 @@ function SuitBadge({
   );
 }
 
-function PlayerEmblem({
-  character,
-  bot = false,
-}: {
-  readonly character: Character | null;
-  readonly bot?: boolean;
-}) {
-  return (
-    <span
-      className={`player-emblem ${character ? `emblem-${character.suit}` : ''}`}
-      aria-hidden="true"
-    >
-      {bot ? <Bot size={22} /> : (character?.rank ?? '?')}
-    </span>
-  );
-}
-
 function OpponentHud({
   player,
   current,
@@ -246,7 +230,9 @@ function OpponentHud({
       aria-pressed={selected}
       onClick={onSelect}
     >
-      <PlayerEmblem character={player.activeCharacter} bot />
+      <span className="player-emblem avatar-emblem">
+        <img src={avatarAsset(player.avatarId)} alt={`${player.displayName}的头像`} />
+      </span>
       <div className="opponent-summary">
         <strong>{player.displayName}</strong>
         <span>
@@ -630,7 +616,9 @@ function TableScene({
       <section className="self-tray" aria-label="你的角色与手牌">
         {self?.activeCharacter ? (
           <div className={`self-player-hud${isTurn ? ' is-current' : ''}`}>
-            <PlayerEmblem character={self.activeCharacter} />
+            <span className="player-emblem avatar-emblem">
+              <img src={avatarAsset(self.avatarId)} alt="你的头像" />
+            </span>
             <div className="self-player-copy">
               <span>你的角色 · {self.handCount} 张手牌</span>
               <strong>{self.displayName}</strong>

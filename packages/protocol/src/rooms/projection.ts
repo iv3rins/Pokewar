@@ -43,6 +43,7 @@ export const publicCharacterSchema = z.object({
 export const playerProjectionSchema = z.object({
   id: z.string(),
   displayName: z.string(),
+  avatarId: z.string().optional(),
   seat: z.int().nonnegative().nullable(),
   connected: z.boolean(),
   eliminated: z.boolean(),
@@ -104,6 +105,7 @@ export const gameProjectionSchema = z.object({
 export const roomMemberProjectionSchema = z.object({
   identityId: z.string(),
   displayName: z.string(),
+  avatarId: z.string().optional(),
   ready: z.boolean(),
   connected: z.boolean(),
   isSelf: z.boolean(),

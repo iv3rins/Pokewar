@@ -97,7 +97,11 @@ export class RoomService {
       const game = createGame({
         id: roomId,
         mode,
-        players: players.map((player) => ({ id: player.id, displayName: player.displayName })),
+        players: players.map((player) => ({
+          id: player.id,
+          displayName: player.displayName,
+          ...(player.avatarId ? { avatarId: player.avatarId } : {}),
+        })),
         seed,
         now,
       });

@@ -53,7 +53,12 @@ export function createProfileRouter(
         }),
       );
       return response.json({
-        identity: { displayName: resolved.identity.displayName, kind: resolved.identity.kind },
+        identity: {
+          id: resolved.identity.id,
+          displayName: resolved.identity.displayName,
+          kind: resolved.identity.kind,
+          avatarId: resolved.identity.avatarId ?? 'court-01',
+        },
         ratings: views,
       });
     }),

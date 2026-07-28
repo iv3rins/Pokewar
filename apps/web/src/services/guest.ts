@@ -1,7 +1,9 @@
 export interface GuestSession {
   readonly identity: {
+    readonly id: string;
     readonly displayName: string;
     readonly kind: 'guest' | 'account';
+    readonly avatarId?: string;
   };
 }
 

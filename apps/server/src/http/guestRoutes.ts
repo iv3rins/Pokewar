@@ -12,7 +12,12 @@ import {
 import { asyncHandler } from './asyncHandler.js';
 
 function publicIdentity(identity: GuestIdentity) {
-  return { displayName: identity.displayName, kind: identity.kind };
+  return {
+    id: identity.id,
+    displayName: identity.displayName,
+    kind: identity.kind,
+    avatarId: identity.avatarId ?? 'court-01',
+  };
 }
 
 function sessionCookies(

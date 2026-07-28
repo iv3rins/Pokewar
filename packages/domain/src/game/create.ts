@@ -54,6 +54,7 @@ export function createGame(input: CreateGameInput): GameState {
     return {
       id: player.id,
       displayName: player.displayName,
+      ...(player.avatarId ? { avatarId: player.avatarId } : {}),
       originalJoinIndex,
       seat: null,
       characters,

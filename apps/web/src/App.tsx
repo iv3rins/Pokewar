@@ -28,8 +28,10 @@ import {
 } from './services/roomSocket.js';
 
 interface IdentityState {
+  readonly id: string;
   readonly displayName: string;
   readonly kind: 'guest' | 'account';
+  readonly avatarId?: string;
 }
 
 function normalizeRoomCode(value: string): string {
@@ -79,7 +81,7 @@ export function App() {
     setMessage('正在生成访客身份…');
     try {
       const session = await ensureGuestSession();
-      setIdentity(session.identity);
+      setIdentity({ ...session.identity, avatarId: session.identity.avatarId ?? 'court-01' });
       setMessage(`欢迎，${session.identity.displayName}`);
     } catch (reason) {
       setIdentityFailed(true);
@@ -127,9 +129,6 @@ export function App() {
       },
       onRoom: (nextRoom) => {
         if (ignoredRoomIdsRef.current.has(nextRoom.id)) {
-          if (import.meta.env.DEV) {
-            console.info('[pve:leave] ignored-late-snapshot', { roomId: nextRoom.id });
-          }
           return;
         }
         setRoom(nextRoom);
@@ -196,7 +195,7 @@ export function App() {
     setAuthError(null);
     try {
       const session = await operation();
-      setIdentity(session.identity);
+      setIdentity({ ...session.identity, avatarId: session.identity.avatarId ?? 'court-01' });
       setAuthOpen(false);
       setMessage(`账号已登录：${session.identity.displayName}`);
     } catch (reason) {
@@ -289,6 +288,7 @@ export function App() {
             <div className="home-layout">
               <ProfileRail
                 displayName={identity.displayName}
+                avatarId={identity.avatarId ?? 'court-01'}
                 account={identity.kind === 'account'}
                 mode={mode}
                 ratings={ratings}

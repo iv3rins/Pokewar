@@ -16,6 +16,12 @@ describe('guest identity', () => {
     );
   });
 
+  it('assigns a stable local avatar to each identity', () => {
+    expect(createGuestIdentity({ id: 'stable-guest-id' }).avatarId).toBe(
+      createGuestIdentity({ id: 'stable-guest-id' }).avatarId,
+    );
+  });
+
   it('signs and verifies an HttpOnly cookie and rejects tampering', () => {
     const identity = createGuestIdentity({ prefixIndex: 0, nounIndex: 0 });
     const cookie = serializeGuestCookie(identity.id, secret, false);

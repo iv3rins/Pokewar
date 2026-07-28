@@ -1,4 +1,5 @@
 import type { GameMode, RoomProjection } from '@pokewar/protocol';
+import { avatarAsset } from '../../services/avatar.js';
 import {
   Bot,
   Check,
@@ -216,8 +217,8 @@ export function RoomRail({
               {room.members.map((member, index) => (
                 <li key={member.identityId}>
                   <span className="seat-number">{String(index + 1).padStart(2, '0')}</span>
-                  <span className="mini-avatar" aria-hidden="true">
-                    {member.displayName.slice(0, 1)}
+                  <span className="mini-avatar">
+                    <img src={avatarAsset(member.avatarId)} alt={`${member.displayName}的头像`} />
                   </span>
                   <span className="compact-name">
                     <strong>

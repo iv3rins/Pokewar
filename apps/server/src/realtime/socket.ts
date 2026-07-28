@@ -208,16 +208,10 @@ export function setupSocket(
         const parsed = pveLeavePayload.safeParse(payload);
         if (!parsed.success) return ack({ ok: false, code: 'INVALID_PAYLOAD' });
         const { roomId, actionId } = parsed.data;
-        if (config.nodeEnv === 'development') {
-          console.info('[pve:leave] received', { roomId, actionId, identityId: identity.id });
-        }
         const room = await rooms.get(roomId);
         if (!room) {
           await memberships.delete(identity.id);
           await socket.leave(roomId);
-          if (config.nodeEnv === 'development') {
-            console.info('[pve:leave] already-dissolved', { roomId, actionId });
-          }
           return ack({ ok: true, roomId, actionId, leftRoom: true, dissolved: true });
         }
         if (room.kind !== 'pve') return ack({ ok: false, code: 'INVALID_PHASE' });
@@ -227,14 +221,6 @@ export function setupSocket(
         const dissolved = await rooms.dissolvePve(roomId, identity.id);
         await memberships.delete(identity.id);
         await socket.leave(roomId);
-        if (config.nodeEnv === 'development') {
-          console.info('[pve:leave] cleaned', {
-            roomId,
-            actionId,
-            dissolved,
-            membershipCleared: true,
-          });
-        }
         return ack({ ok: true, roomId, actionId, leftRoom: true, dissolved });
       }),
     );

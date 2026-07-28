@@ -1,5 +1,8 @@
 import { z } from 'zod';
+import { AVATAR_IDS } from '../identity/avatar.js';
 import { gameModeSchema } from '../rooms/projection.js';
+
+export const avatarIdSchema = z.enum(AVATAR_IDS as [string, ...string[]]);
 
 export const ratingTierSchema = z.enum([
   'bronze',
@@ -29,7 +32,12 @@ export const leaderboardEntrySchema = z.object({
   losses: z.int().nonnegative(),
 });
 export const profileRankingSchema = z.object({
-  identity: z.object({ displayName: z.string(), kind: z.enum(['guest', 'account']) }),
+  identity: z.object({
+    id: z.string(),
+    displayName: z.string(),
+    kind: z.enum(['guest', 'account']),
+    avatarId: avatarIdSchema,
+  }),
   ratings: z.array(ratingViewSchema).readonly(),
 });
 export const leaderboardSchema = z.object({

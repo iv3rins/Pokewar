@@ -9,12 +9,16 @@ import { serializeAccountCookie } from '../auth/session.js';
 import { asyncHandler } from './asyncHandler.js';
 
 function publicIdentity(identity: {
+  readonly id: string;
   readonly displayName: string;
   readonly kind: 'guest' | 'account' | 'bot';
+  readonly avatarId?: string;
 }) {
   return {
+    id: identity.id,
     displayName: identity.displayName,
     kind: identity.kind === 'bot' ? 'guest' : identity.kind,
+    avatarId: identity.avatarId ?? 'court-01',
   };
 }
 

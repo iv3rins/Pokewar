@@ -105,10 +105,7 @@ export function createRoomSocket(handlers: RoomSocketHandlers): RoomSocketClient
     startPve: (mode, targetSize) => request('pve:start', { mode, targetSize }),
     leavePve: async (roomId) => {
       const actionId = crypto.randomUUID();
-      if (import.meta.env.DEV) console.info('[pve:leave] send', { roomId, actionId });
-      const result = await request('pve:leave', { roomId, actionId });
-      if (import.meta.env.DEV) console.info('[pve:leave] ack', { roomId, actionId, result });
-      return result;
+      return request('pve:leave', { roomId, actionId });
     },
     selectStarter: (roomId, expectedVersion, characterId) =>
       request('game:command', {

@@ -10,6 +10,7 @@ export type GamePhase =
 export interface GamePlayer {
   readonly id: string;
   readonly displayName: string;
+  readonly avatarId?: string;
   readonly originalJoinIndex: number;
   readonly seat: number | null;
   readonly characters: readonly CharacterState[];
@@ -280,6 +281,7 @@ export type TransitionResult =
 export interface CreateGamePlayer {
   readonly id: string;
   readonly displayName: string;
+  readonly avatarId?: string;
 }
 
 export interface CreateGameInput {

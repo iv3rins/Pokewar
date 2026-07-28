@@ -187,10 +187,10 @@ beforeEach(() => {
   sessionStorage.clear();
   mocks.handlers = undefined;
   mocks.ensureGuestSession.mockResolvedValue({
-    identity: { displayName: '静默星轨#A001', kind: 'guest' },
+    identity: { id: 'host', displayName: '静默星轨#A001', kind: 'guest', avatarId: 'court-01' },
   });
   mocks.getProfile.mockResolvedValue({
-    identity: { displayName: '静默星轨#A001', kind: 'guest' },
+    identity: { id: 'host', displayName: '静默星轨#A001', kind: 'guest', avatarId: 'court-01' },
     ratings: [],
   });
   mocks.getLeaderboard.mockResolvedValue({ mode: 'normal', entries: [], self: null });
@@ -223,10 +223,10 @@ describe('PokeWar home', () => {
 
   it('submits reviewed registration choices and switches to account state', async () => {
     mocks.registerAccount.mockResolvedValue({
-      identity: { displayName: '赤曜先锋#A001', kind: 'account' },
+      identity: { id: 'host', displayName: '赤曜先锋#A001', kind: 'account', avatarId: 'court-02' },
     });
     mocks.getProfile.mockResolvedValue({
-      identity: { displayName: '赤曜先锋#A001', kind: 'account' },
+      identity: { id: 'host', displayName: '赤曜先锋#A001', kind: 'account', avatarId: 'court-02' },
       ratings: [
         {
           mode: 'normal',

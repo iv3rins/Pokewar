@@ -32,6 +32,7 @@ describe('RedisGuestIdentityStore', () => {
       kind: 'guest',
       nickname: '静默星轨',
       displayName: '静默星轨#A001',
+      avatarId: 'court-18',
     };
     await store.save(identity);
     expect(await store.get(identity.id)).toEqual(identity);

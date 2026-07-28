@@ -1,5 +1,6 @@
 import type { GameMode, LeaderboardEntry, RatingView } from '@pokewar/protocol';
-import { BookOpen, LogIn, Trophy, UserRound } from 'lucide-react';
+import { avatarAsset } from '../../services/avatar.js';
+import { BookOpen, LogIn, Trophy } from 'lucide-react';
 
 const TIER_LABEL = {
   bronze: '青铜',
@@ -12,6 +13,7 @@ const TIER_LABEL = {
 
 export function ProfileRail({
   displayName,
+  avatarId,
   account,
   mode,
   ratings,
@@ -21,6 +23,7 @@ export function ProfileRail({
   onRules,
 }: {
   readonly displayName: string;
+  readonly avatarId?: string;
   readonly account: boolean;
   readonly mode: GameMode;
   readonly ratings: readonly RatingView[];
@@ -33,8 +36,8 @@ export function ProfileRail({
   return (
     <aside className="profile-rail" aria-label="个人与天梯">
       <section className="profile-summary">
-        <span className="profile-avatar" aria-hidden="true">
-          <UserRound size={28} />
+        <span className="profile-avatar">
+          <img src={avatarAsset(avatarId)} alt="你的头像" />
         </span>
         <div>
           <span>{account ? '注册玩家' : '系统访客'}</span>
