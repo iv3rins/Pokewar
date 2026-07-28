@@ -1725,6 +1725,112 @@ a:focus-visible {
     padding: 18px;
   }
 }
+.chat-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 58px;
+  z-index: 60;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-command);
+  background: var(--color-table-deep);
+  color: var(--color-command);
+}
+.chat-toggle b {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--color-danger);
+  color: white;
+  font-size: 10px;
+}
+.chat-drawer {
+  position: fixed;
+  z-index: 70;
+  top: 68px;
+  right: 0;
+  bottom: 42px;
+  width: min(380px, 100vw);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-left: 1px solid var(--color-command);
+  background: var(--color-table-deep);
+  color: white;
+}
+.chat-drawer header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+.chat-drawer h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.chat-drawer header button,
+.chat-drawer li button,
+.chat-drawer form button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-command);
+  background: transparent;
+  color: var(--color-command);
+}
+.chat-drawer ol {
+  margin: 0;
+  padding: 12px;
+  overflow-y: auto;
+  list-style: none;
+}
+.chat-drawer li {
+  display: grid;
+  grid-template-columns: 36px 1fr 44px;
+  gap: 9px;
+  align-items: start;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.chat-drawer li img {
+  width: 36px;
+  height: 36px;
+}
+.chat-drawer li strong {
+  font-size: 11px;
+  color: var(--color-command);
+}
+.chat-drawer li p {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.chat-drawer form {
+  display: grid;
+  grid-template-columns: 1fr 44px;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+.chat-drawer form label {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  font-weight: 900;
+}
+.chat-drawer input {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--color-command);
+  background: white;
+  color: var(--color-table-deep);
+}
 @media (prefers-reduced-motion: reduce) {
   .combat-presentation,
   .combatant-card,

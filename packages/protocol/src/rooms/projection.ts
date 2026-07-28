@@ -102,6 +102,16 @@ export const gameProjectionSchema = z.object({
     .nullable(),
 });
 
+export const chatMessageSchema = z.object({
+  id: z.string(),
+  senderId: z.string(),
+  senderName: z.string(),
+  senderAvatarId: z.string().optional(),
+  text: z.string().max(200),
+  createdAt: z.int().nonnegative(),
+});
+export type ChatMessage = z.infer<typeof chatMessageSchema>;
+
 export const roomMemberProjectionSchema = z.object({
   identityId: z.string(),
   displayName: z.string(),

@@ -22,7 +22,13 @@ import { NullReplayRepository, type ReplayRepository } from './db/replayReposito
 import { MemoryGuestIdentityStore, type GuestIdentityStore } from './identity/guest.js';
 import { RedisGuestIdentityStore } from './identity/redisGuestStore.js';
 import { RoomLock, type RoomLockAdapter } from './rooms/lock.js';
-import { MemoryRoomMembershipStore, type RoomMembershipStore } from './rooms/membershipStore.js';
+import {
+  MemoryChatMessageStore,
+  MemoryRoomMembershipStore,
+  type ChatMessageStore,
+  type RoomMembershipStore,
+} from './rooms/membershipStore.js';
+import { RedisChatMessageStore } from './rooms/redisChatMessageStore.js';
 import { RedisRoomMembershipStore } from './rooms/redisMembershipStore.js';
 import { MemoryDeadlineStore, type DeadlineStore } from './scheduler/deadlineStore.js';
 import { startDeadlineWorker } from './scheduler/deadlineWorker.js';
@@ -44,6 +50,7 @@ export async function bootstrapServer(config: ServerConfig): Promise<RunningPoke
   let deadlines: DeadlineStore = new MemoryDeadlineStore();
   let roomLock: RoomLockAdapter = new RoomLock();
   let memberships: RoomMembershipStore = new MemoryRoomMembershipStore();
+  let chat: ChatMessageStore = new MemoryChatMessageStore();
   let replays: ReplayRepository = new NullReplayRepository();
   let accounts: AccountRepository = new MemoryAccountRepository();
   let loginRateLimit: LoginRateLimit = new MemoryLoginRateLimit();
@@ -58,6 +65,7 @@ export async function bootstrapServer(config: ServerConfig): Promise<RunningPoke
     deadlines = new RedisDeadlineStore(redis.command, config.redisPrefix);
     roomLock = new RedisRoomLock(redis.command, config.redisPrefix);
     memberships = new RedisRoomMembershipStore(redis.command, config.redisPrefix);
+    chat = new RedisChatMessageStore(redis.command, config.redisPrefix);
     loginRateLimit = new RedisLoginRateLimit(redis.command, config.redisPrefix);
     matchmakingStore = new RedisMatchmakingStore(redis.command, config.redisPrefix);
   }
@@ -75,6 +83,7 @@ export async function bootstrapServer(config: ServerConfig): Promise<RunningPoke
     roomLock,
     replays,
     memberships,
+    chat,
     accounts,
     loginRateLimit,
     ratings,

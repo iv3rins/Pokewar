@@ -18,7 +18,12 @@ import { setupSocket } from './realtime/socket.js';
 import { NullReplayRepository, type ReplayRepository } from './db/replayRepository.js';
 import { MemoryRatingRepository, type RatingRepository } from './rating/ratingRepository.js';
 import { RoomLock, type RoomLockAdapter } from './rooms/lock.js';
-import { MemoryRoomMembershipStore, type RoomMembershipStore } from './rooms/membershipStore.js';
+import {
+  MemoryChatMessageStore,
+  MemoryRoomMembershipStore,
+  type ChatMessageStore,
+  type RoomMembershipStore,
+} from './rooms/membershipStore.js';
 import { RoomService } from './rooms/roomService.js';
 import { MemoryRoomStore, type RoomStore } from './storage/roomStore.js';
 import { BotService } from './bot/botService.js';
@@ -29,6 +34,7 @@ export interface AppDependencies {
   readonly roomLock?: RoomLockAdapter;
   readonly replays?: ReplayRepository;
   readonly memberships?: RoomMembershipStore;
+  readonly chat?: ChatMessageStore;
   readonly accounts?: AccountRepository;
   readonly loginRateLimit?: LoginRateLimit;
   readonly ratings?: RatingRepository;
@@ -110,6 +116,16 @@ export function createPokeWarServer(
     cors: { origin: [...config.corsOrigins], credentials: true },
     transports: ['websocket'],
   });
-  setupSocket(io, config, identities, rooms, memberships, auth, matchmaking, bots);
+  setupSocket(
+    io,
+    config,
+    identities,
+    rooms,
+    memberships,
+    dependencies.chat ?? new MemoryChatMessageStore(),
+    auth,
+    matchmaking,
+    bots,
+  );
   return { app, httpServer, io, rooms, matchmaking, bots };
 }

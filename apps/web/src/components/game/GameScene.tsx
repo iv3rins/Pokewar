@@ -1,10 +1,11 @@
-import type { GameProjection, RoomProjection } from '@pokewar/protocol';
+import type { ChatMessage, GameProjection, RoomProjection } from '@pokewar/protocol';
 import { Clock3, Heart, LogOut, Shield, Spade, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { GameAction } from '../../services/roomSocket.js';
 import { avatarAsset } from '../../services/avatar.js';
 import { audioEngine } from '../../services/audio.js';
 import { hasFinishedPveTutorial, TutorialGuide } from './TutorialGuide.js';
+import { ChatDrawer } from './ChatDrawer.js';
 import {
   BattleHistory,
   CombatPresentation,
@@ -719,6 +720,8 @@ export function GameScene({
   onCommand,
   onLeave,
   onReturnLobby,
+  chatMessages,
+  onSendChat,
   tutorialRequest,
 }: {
   readonly room: RoomProjection;
@@ -728,6 +731,8 @@ export function GameScene({
   readonly onCommand: (command: GameAction) => void;
   readonly onLeave: () => void;
   readonly onReturnLobby: () => void;
+  readonly chatMessages: readonly ChatMessage[];
+  readonly onSendChat: (text: string) => Promise<boolean>;
   readonly tutorialRequest: number;
 }) {
   const [tutorialOpen, setTutorialOpen] = useState(() => !hasFinishedPveTutorial());
@@ -760,6 +765,9 @@ export function GameScene({
           onReturnLobby={onReturnLobby}
         />
       )}
+      {room.kind !== 'pve' ? (
+        <ChatDrawer messages={chatMessages} disabled={disabled} onSend={onSendChat} />
+      ) : null}
       <TutorialGuide
         open={room.kind === 'pve' && tutorialOpen}
         mode={room.game.mode}

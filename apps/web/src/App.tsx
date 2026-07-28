@@ -1,4 +1,5 @@
 import type {
+  ChatMessage,
   GameMode,
   LeaderboardEntry,
   MatchSize,
@@ -55,6 +56,7 @@ export function App() {
   const [message, setMessage] = useState('正在生成访客身份…');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [chatMessages, setChatMessages] = useState<readonly ChatMessage[]>([]);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [tutorialRequest, setTutorialRequest] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);
@@ -144,6 +146,9 @@ export function App() {
       onLeft: () => {
         setRoom(null);
         setMessage('对局或房间已结束，已返回大厅。');
+      },
+      onChat(message) {
+        setChatMessages((messages) => [...messages, message].slice(-50));
       },
       onMatchmaking(state) {
         setMatchmaking(state);
@@ -279,6 +284,13 @@ export function App() {
               withCurrentRoom((socket, currentRoom) => socket.returnToLobby(currentRoom.id)),
             )
           }
+          chatMessages={chatMessages}
+          onSendChat={async (text) => {
+            const currentRoom = roomRef.current;
+            const socket = socketRef.current;
+            if (!currentRoom || !socket) return false;
+            return (await socket.sendChat(currentRoom.id, text)).ok;
+          }}
           tutorialRequest={tutorialRequest}
         />
       ) : (

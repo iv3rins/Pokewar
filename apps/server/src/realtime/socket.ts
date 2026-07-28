@@ -2,6 +2,7 @@ import {
   matchmakingAcceptPayloadSchema,
   matchmakingModePayloadSchema,
   roomCommandSchema,
+  type ChatMessage,
   type MatchmakingState,
 } from '@pokewar/protocol';
 import { randomBytes } from 'node:crypto';
@@ -15,7 +16,7 @@ import type { MatchmakingResult, MatchmakingService } from '../matchmaking/match
 import type { BotService } from '../bot/botService.js';
 import { projectRoom } from '../rooms/projection.js';
 import type { RoomService } from '../rooms/roomService.js';
-import type { RoomMembershipStore } from '../rooms/membershipStore.js';
+import type { ChatMessageStore, RoomMembershipStore } from '../rooms/membershipStore.js';
 import type { RoomState } from '../rooms/model.js';
 
 const roomIdPayload = z.object({
@@ -66,12 +67,14 @@ export function setupSocket(
   identities: GuestIdentityStore,
   rooms: RoomService,
   memberships: RoomMembershipStore,
+  chat: ChatMessageStore,
   auth: AuthService,
   matchmaking: MatchmakingService,
   bots: BotService,
 ): void {
   const controllingSocket = new Map<string, string>();
   const socketIdentities = new Map<string, GuestIdentity>();
+  const lastChatAt = new Map<string, number>();
 
   io.use((socket, next) => {
     void resolveIdentity(
@@ -144,6 +147,68 @@ export function setupSocket(
       await socket.leave(room.id);
       return true;
     };
+
+    socket.on(
+      'chat:get-history',
+      safeHandler(async (payload: unknown, ack: Ack) => {
+        const parsed = roomIdPayload.safeParse(payload);
+        if (!parsed.success) return ack({ ok: false, code: 'INVALID_PAYLOAD' });
+        const room = await rooms.get(parsed.data.roomId);
+        if (
+          !room?.game ||
+          room.kind === 'pve' ||
+          !room.members.some((m) => m.identityId === identity.id)
+        ) {
+          return ack({ ok: false, code: 'CHAT_NOT_AVAILABLE' });
+        }
+        return ack({ ok: true, messages: await chat.list(room.id) });
+      }),
+    );
+
+    socket.on(
+      'chat:send',
+      safeHandler(async (payload: unknown, ack: Ack) => {
+        if (rejectReadOnly(ack)) return;
+        const parsed = roomIdPayload.extend({ text: z.string().max(1000) }).safeParse(payload);
+        if (!parsed.success) return ack({ ok: false, code: 'INVALID_PAYLOAD' });
+        const room = await rooms.get(parsed.data.roomId);
+        if (
+          !room?.game ||
+          room.kind === 'pve' ||
+          !room.members.some((m) => m.identityId === identity.id)
+        ) {
+          return ack({ ok: false, code: 'CHAT_NOT_AVAILABLE' });
+        }
+        const now = Date.now();
+        if (now - (lastChatAt.get(identity.id) ?? 0) < 2_000)
+          return ack({ ok: false, code: 'CHAT_RATE_LIMITED' });
+        const text = Array.from(parsed.data.text, (character) =>
+          (character.codePointAt(0) ?? 0) < 32 || character.codePointAt(0) === 127
+            ? ' '
+            : character,
+        )
+          .join('')
+          .replace(/\s+/g, ' ')
+          .trim();
+        if (!text || Array.from(text).length > 200)
+          return ack({ ok: false, code: 'INVALID_CHAT_MESSAGE' });
+        const message: ChatMessage = {
+          id: randomBytes(16).toString('hex'),
+          senderId: identity.id,
+          senderName: identity.displayName,
+          senderAvatarId: identity.avatarId,
+          text,
+          createdAt: now,
+        };
+        lastChatAt.set(identity.id, now);
+        await chat.append(room.id, message, room.game.phase === 'GAME_OVER' ? 600 : 86_400);
+        for (const member of room.members) {
+          if (!member.identityId.startsWith('bot:'))
+            io.to(`identity:${member.identityId}`).emit('chat:message', message);
+        }
+        return ack({ ok: true, message });
+      }),
+    );
 
     socket.on(
       'matchmaking:enqueue',

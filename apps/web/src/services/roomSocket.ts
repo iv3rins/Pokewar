@@ -3,6 +3,8 @@ import {
   roomProjectionSchema,
   type GameMode,
   type RoomCommand,
+  chatMessageSchema,
+  type ChatMessage,
   type MatchSize,
   type MatchmakingState,
   type RoomProjection,
@@ -38,6 +40,7 @@ export interface RoomSocketHandlers {
   onKicked(): void;
   onLeft(): void;
   onMatchmaking(state: MatchmakingState): void;
+  onChat(message: ChatMessage): void;
 }
 
 export interface RoomSocketClient {
@@ -57,6 +60,8 @@ export interface RoomSocketClient {
   cancelMatchmaking(): Promise<AckResult>;
   acceptMatch(proposalId: string): Promise<AckResult>;
   declineMatch(): Promise<AckResult>;
+  getChatHistory(roomId: string): Promise<readonly ChatMessage[]>;
+  sendChat(roomId: string, text: string): Promise<AckResult>;
   disconnect(): void;
 }
 
@@ -82,6 +87,10 @@ export function createRoomSocket(handlers: RoomSocketHandlers): RoomSocketClient
   socket.on('room:snapshot', acceptRoom);
   socket.on('room:kicked', () => handlers.onKicked());
   socket.on('room:left', () => handlers.onLeft());
+  socket.on('chat:message', (value: unknown) => {
+    const parsed = chatMessageSchema.safeParse(value);
+    if (parsed.success) handlers.onChat(parsed.data);
+  });
   socket.on('matchmaking:state', (value: unknown) => {
     const parsed = matchmakingStateSchema.safeParse(value);
     if (parsed.success) handlers.onMatchmaking(parsed.data);
@@ -123,6 +132,17 @@ export function createRoomSocket(handlers: RoomSocketHandlers): RoomSocketClient
     cancelMatchmaking: () => request('matchmaking:cancel', {}),
     acceptMatch: (proposalId) => request('matchmaking:accept', { proposalId }),
     declineMatch: () => request('matchmaking:decline', {}),
+    getChatHistory: async (roomId) => {
+      const result = await emit(socket, 'chat:get-history', { roomId });
+      const messages: unknown = Reflect.get(result, 'messages');
+      return Array.isArray(messages)
+        ? messages.flatMap((message) => {
+            const parsed = chatMessageSchema.safeParse(message);
+            return parsed.success ? [parsed.data] : [];
+          })
+        : [];
+    },
+    sendChat: (roomId, text) => request('chat:send', { roomId, text }),
     disconnect: () => socket.disconnect(),
   };
 }

@@ -127,7 +127,7 @@ export function RoomRail({
             value={roomCode}
             maxLength={5}
             autoCapitalize="characters"
-            placeholder="A2BCD"
+            placeholder=""
             onChange={(event) => onRoomCode(event.target.value)}
           />
           <button

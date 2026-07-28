@@ -65,7 +65,7 @@ export function CenterStage({
       <div className="center-title">
         <Spade size={22} aria-hidden="true" />
         <h1 id="home-title">POKEWAR</h1>
-        <p>牌局由服务器裁决，胜负只在桌上决定</p>
+        <p>来扑克一把</p>
       </div>
       <div className="match-controls">
         <ModeSelector
@@ -117,7 +117,7 @@ export function CenterStage({
             ? queuedDescription
             : matchmaking.status === 'confirming'
               ? '已找到对手，请完成确认'
-              : '访客可匹配；仅双方账号时计入天梯'}
+              : '访客可匹配；对手都是账号登录时计入天梯'}
         </span>
       </div>
     </section>
