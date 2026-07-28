@@ -1,0 +1,176 @@
+{
+  "runId": "a4192eec",
+  "agent": "reviewer",
+  "task": "[Read from: D:\\iverins_workspace\\game\\pokewar-final\\plan.md, D:\\iverins_workspace\\game\\pokewar-final\\progress.md]\n\n对当前 PokeWar 仓库做上线前生产就绪只读审计。遵守 AGENTS.md/read order。重点：功能未完成项、安全、Redis/PostgreSQL真实集成、WebSocket/CORS/cookies、部署环境变量、测试缺口、监控备份恢复、1vCPU/1GB风险。不得编辑。按 Blocker/High/Medium/Optional 输出证据路径。",
+  "exitCode": 0,
+  "usage": {
+    "input": 188371,
+    "output": 10072,
+    "cacheRead": 266240,
+    "cacheWrite": 0,
+    "cost": 0,
+    "turns": 9
+  },
+  "model": "hubway-gpt/gpt-5.6-sol:high",
+  "attemptedModels": [
+    "hubway-gpt/gpt-5.6-sol:high"
+  ],
+  "modelAttempts": [
+    {
+      "model": "hubway-gpt/gpt-5.6-sol:high",
+      "success": true,
+      "exitCode": 0,
+      "usage": {
+        "input": 188371,
+        "output": 10072,
+        "cacheRead": 266240,
+        "cacheWrite": 0,
+        "cost": 0,
+        "turns": 9
+      }
+    }
+  ],
+  "durationMs": 341431,
+  "toolCount": 56,
+  "launchContractDigest": "041637887a2b1e19048de323e7a972ff1ff0f2e86ff2504f14bec1e378d8bad3",
+  "acceptance": {
+    "status": "attested",
+    "evidenceStatus": "attested",
+    "explicit": false,
+    "effectiveAcceptance": {
+      "level": "attested",
+      "explicit": false,
+      "inferredReason": [
+        "read-only/reviewer-style agent"
+      ],
+      "criteria": [
+        {
+          "id": "criterion-1",
+          "must": "Return concrete findings with file paths and severity when applicable",
+          "evidence": [
+            "review-findings",
+            "residual-risks"
+          ],
+          "severity": "required"
+        }
+      ],
+      "evidence": [
+        "review-findings",
+        "residual-risks"
+      ],
+      "verify": [],
+      "stopRules": []
+    },
+    "inferredReason": [
+      "read-only/reviewer-style agent"
+    ],
+    "criteria": [
+      {
+        "id": "criterion-1",
+        "must": "Return concrete findings with file paths and severity when applicable",
+        "evidence": [
+          "review-findings",
+          "residual-risks"
+        ],
+        "severity": "required"
+      }
+    ],
+    "runtimeChecks": [],
+    "verifyRuns": [],
+    "childReport": {
+      "criteriaSatisfied": [
+        {
+          "id": "criterion-1",
+          "status": "satisfied",
+          "evidence": "已按 Blocker/High/Medium/Optional 给出具体发现，并引用 apps/server/src/rooms/roomService.ts、apps/server/src/rating/ratingRepository.ts、apps/web/src/components/game/GameScene.tsx、apps/server/src/realtime/socket.ts、apps/server/src/bootstrap.ts、docs/ARCHITECTURE.md 等路径和行号。"
+        }
+      ],
+      "changedFiles": [],
+      "testsAddedOrUpdated": [],
+      "commandsRun": [
+        {
+          "command": "pnpm format:check",
+          "result": "failed",
+          "summary": "3 个 .pi-subagents/artifacts Markdown 文件不符合 Prettier。"
+        },
+        {
+          "command": "pnpm lint",
+          "result": "passed",
+          "summary": "ESLint 完成且无错误输出。"
+        },
+        {
+          "command": "pnpm typecheck",
+          "result": "passed",
+          "summary": "domain、protocol、server、web 类型检查全部通过。"
+        },
+        {
+          "command": "pnpm test",
+          "result": "passed",
+          "summary": "44 个测试文件、159 个测试全部通过。"
+        },
+        {
+          "command": "pnpm build",
+          "result": "passed",
+          "summary": "所有 workspace 包构建成功；Web 生产 JS gzip 约 103.57 kB。"
+        },
+        {
+          "command": "pnpm test:e2e",
+          "result": "passed",
+          "summary": "2 个 desktop Chromium PVE tutorial 测试通过；没有多人 E2E。"
+        },
+        {
+          "command": "pnpm audit --prod --audit-level high",
+          "result": "passed",
+          "summary": "未发现已知生产依赖漏洞。"
+        },
+        {
+          "command": "git status --short && git diff --stat && git diff --cached --stat",
+          "result": "passed",
+          "summary": "仓库文件均为 untracked；无 staged diff，审计未修改文件。"
+        }
+      ],
+      "validationOutput": [
+        "Typecheck passed for all four workspace projects.",
+        "Unit/component/adapter tests passed: protocol 14, domain 61, web 19, server 65.",
+        "Playwright passed 2 PVE-only tests.",
+        "Production dependency audit reported no known vulnerabilities.",
+        "Formatting completion gate failed on three .pi-subagents artifact files.",
+        "docs/ARCHITECTURE.md:178 explicitly states real Redis/PostgreSQL/Docker integration has not been run."
+      ],
+      "residualRisks": [
+        "真实 Redis/PostgreSQL、迁移、TLS、重连及多实例 fan-out 未验证。",
+        "排位比赛没有赛后 rating 写入路径。",
+        "多人 Web 对局被硬编码为 PVE，主动退出流程不可用。",
+        "缺少 Origin 强制检查以及 guest/room/gameplay 速率限制。",
+        "跨实例 duplicate-tab 控制和 disconnect 判定使用进程内 Map。",
+        "没有部署清单、监控告警、备份恢复或 1 vCPU/1 GB 压测结果。"
+      ],
+      "noStagedFiles": true,
+      "diffSummary": "只读生产就绪审计；未修改任何文件。",
+      "reviewFindings": [
+        "blocker: apps/server/src/rating/ratingRepository.ts:21-29 - 排位仓储没有赛后写入接口，比赛结束不会更新 Glicko-2、场次或胜负。",
+        "blocker: apps/web/src/components/game/GameScene.tsx:492-536 - 所有多人游戏和结算均硬编码显示为 PVE，且退出操作只调用 PVE dissolve 流程。",
+        "blocker: docs/ARCHITECTURE.md:176-178 - Redis/PostgreSQL 只有 mock-backed 测试，没有真实服务集成证明。",
+        "blocker: infra/.gitkeep - 没有可执行生产部署、迁移和反向代理配置。",
+        "high: apps/server/src/realtime/socket.ts:73-74,451-466 - 多实例连接控制使用进程内 Map，可能误触发断线淘汰。",
+        "high: apps/server/src/app.ts:73,104-108 - 没有明确拒绝不受信任 Origin 的 HTTP/Socket.IO 安全检查。",
+        "high: apps/server/src/realtime/socket.ts:148-448 - guest、房间、匹配和 gameplay 没有速率限制。",
+        "high: apps/server/src/bootstrap.ts:64-68 - 三个默认 PostgreSQL Pool 在小规格环境中可能占用约 30 个连接。",
+        "high: apps/server/src/rooms/roomService.ts:430-448 - replay PostgreSQL 写入阻塞 Redis game-over 提交。",
+        "medium: apps/server/src/app.ts:83-85 - health endpoint 不验证任何生产依赖。",
+        "medium: packages/domain/src/game/reducer.ts:103-110 - acceptedCommands 无界增长，配合完整 Redis snapshot 和逐玩家广播存在 1 GB 风险。",
+        "medium: .prettierignore:1-6 - 格式门禁未忽略代理产物并失败。"
+      ],
+      "manualNotes": "任务指定的 plan.md 和 progress.md 均不存在。建议状态保持 No-Go，直至 Blocker 全部关闭并在真实 Redis/PostgreSQL、多实例和 1 vCPU/1 GB 环境完成验收。"
+    }
+  },
+  "effects": {
+    "fileMutation": {
+      "status": "not-applicable",
+      "expected": false,
+      "attempted": true
+    }
+  },
+  "transcriptPath": "D:\\iverins_workspace\\game\\pokewar-final\\.pi-subagents\\artifacts\\a4192eec_reviewer_1_transcript.jsonl",
+  "timestamp": 1785235203362
+}

@@ -1,0 +1,111 @@
+{
+  "runId": "6595d9e9-4633-4da9-8718-c376c4ec9f27",
+  "agent": "scout",
+  "task": "只读梳理多人 ranked 结算链路。依据 references/RULES.md 说明现有 room/matchmaking/rating/replay 模型缺什么，给出可实现的数据模型、Glicko-2 多对手更新、并列名次、事务/幂等方案和测试清单。不要修改文件。\n\n---\nUpdate progress at: D:\\iverins_workspace\\game\\pokewar-final\\.pi-subagents\\artifacts\\progress\\6595d9e9-4633-4da9-8718-c376c4ec9f27\\progress.md\n\n---\n**Output:**\nWrite your findings to exactly this path: D:\\iverins_workspace\\game\\pokewar-final\\.pi-subagents\\artifacts\\outputs\\6595d9e9-4633-4da9-8718-c376c4ec9f27\\parallel-0\\2-scout\\context.md\nThis path is authoritative for this run.\nIgnore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.\n\n## Acceptance Contract\nAcceptance level: attested\nCompletion is not accepted from prose alone. End with a structured acceptance report.\n\nCriteria:\n- criterion-1: Return concrete findings with file paths and severity when applicable\n\nRequired evidence: review-findings, residual-risks\n\nFinish with a fenced JSON block tagged `acceptance-report` in this shape:\nUse empty arrays when no items apply; array fields contain strings unless object entries are shown.\n`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.\n`commandsRun[].result` must be exactly one of: passed, failed, not-run.\n`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.\n```acceptance-report\n{\n  \"criteriaSatisfied\": [\n    {\n      \"id\": \"criterion-1\",\n      \"status\": \"satisfied\",\n      \"evidence\": \"specific proof\"\n    }\n  ],\n  \"changedFiles\": [\n    \"src/file.ts\"\n  ],\n  \"testsAddedOrUpdated\": [\n    \"test/file.test.ts\"\n  ],\n  \"commandsRun\": [\n    {\n      \"command\": \"command\",\n      \"result\": \"passed\",\n      \"summary\": \"short result\"\n    }\n  ],\n  \"validationOutput\": [\n    \"validation output or concise summary\"\n  ],\n  \"residualRisks\": [\n    \"none\"\n  ],\n  \"noStagedFiles\": true,\n  \"diffSummary\": \"short description of the diff\",\n  \"reviewFindings\": [\n    \"blocker: file.ts:12 - issue found, or no blockers\"\n  ],\n  \"manualNotes\": \"anything else the parent should know\"\n}\n```",
+  "exitCode": 0,
+  "model": "hubway-gpt/gpt-5.6-sol:low",
+  "attemptedModels": [
+    "hubway-gpt/gpt-5.6-sol:low"
+  ],
+  "modelAttempts": [
+    {
+      "model": "hubway-gpt/gpt-5.6-sol:low",
+      "success": true,
+      "exitCode": 0,
+      "usage": {
+        "input": 92181,
+        "output": 9170,
+        "cacheRead": 181760,
+        "cacheWrite": 0,
+        "cost": 0,
+        "turns": 8
+      }
+    }
+  ],
+  "acceptance": {
+    "status": "attested",
+    "evidenceStatus": "attested",
+    "explicit": false,
+    "effectiveAcceptance": {
+      "level": "attested",
+      "explicit": false,
+      "inferredReason": [
+        "read-only/reviewer-style agent"
+      ],
+      "criteria": [
+        {
+          "id": "criterion-1",
+          "must": "Return concrete findings with file paths and severity when applicable",
+          "evidence": [
+            "review-findings",
+            "residual-risks"
+          ],
+          "severity": "required"
+        }
+      ],
+      "evidence": [
+        "review-findings",
+        "residual-risks"
+      ],
+      "verify": [],
+      "stopRules": []
+    },
+    "inferredReason": [
+      "read-only/reviewer-style agent"
+    ],
+    "criteria": [
+      {
+        "id": "criterion-1",
+        "must": "Return concrete findings with file paths and severity when applicable",
+        "evidence": [
+          "review-findings",
+          "residual-risks"
+        ],
+        "severity": "required"
+      }
+    ],
+    "runtimeChecks": [],
+    "verifyRuns": [],
+    "childReport": {
+      "criteriaSatisfied": [
+        {
+          "id": "criterion-1",
+          "status": "satisfied",
+          "evidence": "已给出 10 条带 severity 与精确文件行范围的 review findings，并覆盖 room/matchmaking/rating/replay 缺口、数据模型、多人 Glicko-2、并列、事务幂等和测试清单。"
+        }
+      ],
+      "changedFiles": [],
+      "testsAddedOrUpdated": [],
+      "commandsRun": [
+        {
+          "command": "read/grep/find static inspection only",
+          "result": "passed",
+          "summary": "只读检索规范、ADR、room、matchmaking、rating、replay、domain elimination 和现有测试。"
+        }
+      ],
+      "validationOutput": [
+        "确认 GAME_OVER 当前只写 replay，不更新 rating。",
+        "确认 rankedProposal 仅投影到 confirmation，未冻结进 RoomState。",
+        "确认现有 schema 无 placement、rating ledger、settlement idempotency key。"
+      ],
+      "residualRisks": [
+        "规范/ADR 仍有 two-player 残留措辞。",
+        "wins/losses、leaderboard 同分名次和长期匿名 summary 字段需产品决定。",
+        "真实 Redis/PostgreSQL 故障恢复尚未运行验证，本任务为只读梳理。"
+      ],
+      "noStagedFiles": true,
+      "diffSummary": "未修改仓库源文件；仅写入要求的 scout artifact 与 progress artifact。",
+      "reviewFindings": [
+        "blocker: apps/server/src/rooms/roomService.ts:430-446 - GAME_OVER 只保存 replay，完全没有 ranked rating 更新。",
+        "blocker: apps/server/src/rooms/model.ts:16-28 - RoomState 未冻结 ranked eligibility/proposal/account-at-start 元数据。",
+        "blocker: packages/domain/src/game/model.ts:10-21 - 终局状态无 elimination ordinal/resolution，无法可靠生成多人 placement/tie。",
+        "blocker: apps/server/src/rooms/roomService.ts:430-448 - PostgreSQL replay 与 Redis room 非原子，且无持久 settlement retry 状态。",
+        "high: apps/server/src/db/migrate.ts:22-47 - 无 ranked match/participant/rating ledger 与 once-only 幂等约束。"
+      ],
+      "manualNotes": "输出为只读设计审查；没有执行测试或修改项目代码。"
+    }
+  },
+  "transcriptPath": "D:\\iverins_workspace\\game\\pokewar-final\\.pi-subagents\\artifacts\\6595d9e9-4633-4da9-8718-c376c4ec9f27_scout_2_transcript.jsonl",
+  "skills": [],
+  "timestamp": 1785238442506
+}

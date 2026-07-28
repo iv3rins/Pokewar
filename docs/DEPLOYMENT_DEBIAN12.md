@@ -27,11 +27,11 @@ getent ahosts game.n1komajor.top
 
 ## 2. 一键部署
 
-在项目根目录运行：
+在项目根目录运行。项目源代码可以位于 `/root`，但部署目标必须使用脚本默认的 `/opt/pokewar`；不要设置 `APP_DIR=/root/...`，因为服务用户无权穿过 `/root`：
 
 ```bash
 cd /root/pokewar-final
-sudo DOMAIN=game.n1komajor.top \
+sudo env -u APP_DIR DOMAIN=game.n1komajor.top \
   LETSENCRYPT_EMAIL=iverins.user@gmail.com \
   bash scripts/deploy-debian12.sh
 ```
@@ -39,7 +39,7 @@ sudo DOMAIN=game.n1komajor.top \
 脚本默认值已经是上述域名和邮箱，因此也可直接运行：
 
 ```bash
-sudo bash scripts/deploy-debian12.sh
+sudo env -u APP_DIR bash scripts/deploy-debian12.sh
 ```
 
 完成后访问：<https://game.n1komajor.top>
@@ -77,7 +77,7 @@ curl --fail https://game.n1komajor.top/healthz
 
 ```bash
 cd /root/pokewar-final
-sudo bash scripts/deploy-debian12.sh
+sudo env -u APP_DIR bash scripts/deploy-debian12.sh
 ```
 
 脚本将重新同步代码、安装锁文件依赖、执行幂等迁移、构建并重启服务。更新后检查：
@@ -94,7 +94,7 @@ journalctl -u pokewar -n 100 --no-pager
 ```bash
 sudo systemctl stop pokewar
 # 将上一版代码恢复到部署源目录，再运行部署脚本
-sudo bash scripts/deploy-debian12.sh
+sudo env -u APP_DIR bash scripts/deploy-debian12.sh
 ```
 
 数据库迁移当前只使用 `CREATE TABLE/INDEX IF NOT EXISTS`，但未来任何破坏性迁移都必须先备份并编写独立回滚计划。

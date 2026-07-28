@@ -22,6 +22,11 @@ fail() { printf '\n\033[1;31m[PokeWar] ERROR:\033[0m %s\n' "$*" >&2; exit 1; }
 [[ "$(id -u)" -eq 0 ]] || fail "请使用 root 运行：sudo bash scripts/deploy-debian12.sh"
 [[ -f "$SOURCE_DIR/pnpm-lock.yaml" && -f "$SOURCE_DIR/apps/server/package.json" ]] || fail "请在完整项目目录中运行脚本"
 [[ "$DOMAIN" =~ ^[A-Za-z0-9.-]+$ ]] || fail "DOMAIN 格式不合法"
+case "$APP_DIR" in
+  /root|/root/*) fail "APP_DIR 不能位于 /root 下。请使用默认路径 /opt/pokewar，或设置 APP_DIR=/opt/pokewar" ;;
+  /*) ;;
+  *) fail "APP_DIR 必须是绝对路径" ;;
+esac
 
 export DEBIAN_FRONTEND=noninteractive
 log "安装 Debian 系统依赖"
@@ -41,6 +46,7 @@ fi
 corepack enable
 corepack prepare pnpm@11.17.0 --activate
 PNPM_BIN="$(command -v pnpm)"
+[[ -x "$PNPM_BIN" ]] || fail "pnpm 安装失败"
 
 log "创建服务用户与应用目录"
 if ! id "$APP_USER" >/dev/null 2>&1; then
@@ -85,9 +91,9 @@ chown root:"$APP_USER" "$ENV_FILE"
 chmod 0640 "$ENV_FILE"
 
 log "安装依赖、执行数据库迁移并构建"
-runuser -u "$APP_USER" -- env HOME="$APP_DIR" "$PNPM_BIN" --dir "$APP_DIR" install --frozen-lockfile
+runuser -u "$APP_USER" -- env HOME="$APP_DIR" bash -c "cd '$APP_DIR' && '$PNPM_BIN' install --frozen-lockfile"
 runuser -u "$APP_USER" -- env HOME="$APP_DIR" bash -c "set -a; source '$ENV_FILE'; set +a; cd '$APP_DIR'; '$PNPM_BIN' --filter @pokewar/server migrate"
-runuser -u "$APP_USER" -- env HOME="$APP_DIR" "$PNPM_BIN" --dir "$APP_DIR" build
+runuser -u "$APP_USER" -- env HOME="$APP_DIR" bash -c "cd '$APP_DIR' && '$PNPM_BIN' build"
 # Nginx may traverse the private source path but can read only the built web output.
 setfacl -m u:www-data:x "$APP_DIR" "$APP_DIR/apps" "$APP_DIR/apps/web"
 setfacl -R -m u:www-data:rX "$APP_DIR/apps/web/dist"

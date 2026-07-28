@@ -1,0 +1,145 @@
+{
+  "runId": "91f712e6-eafe-4e73-baa2-c469913b4149",
+  "agent": "reviewer",
+  "task": "[Read from: D:\\iverins_workspace\\game\\pokewar-final\\plan.md, D:\\iverins_workspace\\game\\pokewar-final\\progress.md]\n\n只读进行上线准备审计。重点检查 Debian 12 空白服务器部署所需：构建/启动方式、静态资源服务、Redis/PostgreSQL、迁移、反向代理/TLS、环境变量、健康检查、进程管理、备份与安全。列出具体阻塞项和建议，不要修改文件。\n\n## Acceptance Contract\nAcceptance level: attested\nCompletion is not accepted from prose alone. End with a structured acceptance report.\n\nCriteria:\n- criterion-1: Return concrete findings with file paths and severity when applicable\n\nRequired evidence: review-findings, residual-risks\n\nFinish with a fenced JSON block tagged `acceptance-report` in this shape:\nUse empty arrays when no items apply; array fields contain strings unless object entries are shown.\n`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.\n`commandsRun[].result` must be exactly one of: passed, failed, not-run.\n`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.\n```acceptance-report\n{\n  \"criteriaSatisfied\": [\n    {\n      \"id\": \"criterion-1\",\n      \"status\": \"satisfied\",\n      \"evidence\": \"specific proof\"\n    }\n  ],\n  \"changedFiles\": [\n    \"src/file.ts\"\n  ],\n  \"testsAddedOrUpdated\": [\n    \"test/file.test.ts\"\n  ],\n  \"commandsRun\": [\n    {\n      \"command\": \"command\",\n      \"result\": \"passed\",\n      \"summary\": \"short result\"\n    }\n  ],\n  \"validationOutput\": [\n    \"validation output or concise summary\"\n  ],\n  \"residualRisks\": [\n    \"none\"\n  ],\n  \"noStagedFiles\": true,\n  \"diffSummary\": \"short description of the diff\",\n  \"reviewFindings\": [\n    \"blocker: file.ts:12 - issue found, or no blockers\"\n  ],\n  \"manualNotes\": \"anything else the parent should know\"\n}\n```",
+  "exitCode": 0,
+  "model": "hubway-gpt/gpt-5.6-sol:high",
+  "attemptedModels": [
+    "hubway-gpt/gpt-5.6-sol:high"
+  ],
+  "modelAttempts": [
+    {
+      "model": "hubway-gpt/gpt-5.6-sol:high",
+      "success": true,
+      "exitCode": 0,
+      "usage": {
+        "input": 47108,
+        "output": 7104,
+        "cacheRead": 78848,
+        "cacheWrite": 0,
+        "cost": 0,
+        "turns": 5
+      }
+    }
+  ],
+  "acceptance": {
+    "status": "attested",
+    "evidenceStatus": "attested",
+    "explicit": false,
+    "effectiveAcceptance": {
+      "level": "attested",
+      "explicit": false,
+      "inferredReason": [
+        "read-only/reviewer-style agent"
+      ],
+      "criteria": [
+        {
+          "id": "criterion-1",
+          "must": "Return concrete findings with file paths and severity when applicable",
+          "evidence": [
+            "review-findings",
+            "residual-risks"
+          ],
+          "severity": "required"
+        }
+      ],
+      "evidence": [
+        "review-findings",
+        "residual-risks"
+      ],
+      "verify": [],
+      "stopRules": []
+    },
+    "inferredReason": [
+      "read-only/reviewer-style agent"
+    ],
+    "criteria": [
+      {
+        "id": "criterion-1",
+        "must": "Return concrete findings with file paths and severity when applicable",
+        "evidence": [
+          "review-findings",
+          "residual-risks"
+        ],
+        "severity": "required"
+      }
+    ],
+    "runtimeChecks": [],
+    "verifyRuns": [],
+    "childReport": {
+      "criteriaSatisfied": [
+        {
+          "id": "criterion-1",
+          "status": "satisfied",
+          "evidence": "提供了带严重级别、文件路径和行号的具体上线审计发现；覆盖构建/启动、静态资源、Redis/PostgreSQL、迁移、TLS/反向代理、环境变量、健康检查、进程管理、备份与安全。"
+        }
+      ],
+      "changedFiles": [],
+      "testsAddedOrUpdated": [],
+      "commandsRun": [
+        {
+          "command": "pnpm build",
+          "result": "passed",
+          "summary": "4 个 workspace 项目构建成功；生成 apps/web/dist 和 apps/server/dist。"
+        },
+        {
+          "command": "pnpm --filter @pokewar/server test -- src/config/config.test.ts src/app.test.ts",
+          "result": "passed",
+          "summary": "Vitest 实际运行 server 全部 30 个测试文件、65 个测试，全部通过。"
+        },
+        {
+          "command": "git status --short && git log -1 --oneline",
+          "result": "failed",
+          "summary": "git status 显示工作树文件均未跟踪；git log 失败，因为当前 master 分支尚无提交。"
+        },
+        {
+          "command": "find infra -maxdepth 3 -type f -print",
+          "result": "passed",
+          "summary": "仅发现 infra/.gitkeep，没有生产部署文件。"
+        },
+        {
+          "command": "find . -maxdepth 3 for deployment, backup, restore, Dockerfile, Caddyfile, systemd and compose files",
+          "result": "passed",
+          "summary": "排除 node_modules 和 subagent artifacts 后未发现任何匹配的生产部署或备份文件。"
+        }
+      ],
+      "validationOutput": [
+        "pnpm build: packages/domain、packages/protocol、apps/server、apps/web 全部成功。",
+        "Vite 生产输出约 369 KB，包含 index.html、CSS 和 JS assets。",
+        "Server tests: 30 files passed, 65 tests passed。",
+        "plan.md 和 progress.md 读取均返回 ENOENT。",
+        "infra 目录只有 .gitkeep。",
+        "当前分支没有 Git commit，全部项目文件显示为未跟踪；没有 staged 文件。"
+      ],
+      "residualRisks": [
+        "尚未在真实 Debian 12、Redis、PostgreSQL 和反向代理环境运行集成测试。",
+        "尚未验证 TLS 签发/续期及 Socket.IO WebSocket Upgrade。",
+        "尚未验证 Redis/PostgreSQL 重启、持久化、迁移和灾难恢复。",
+        "当前健康接口不能发现 Redis、PostgreSQL、schema 或 worker 故障。",
+        "没有经过验证的备份恢复、更新回滚、主机重启恢复和安全加固流程。"
+      ],
+      "noStagedFiles": true,
+      "diffSummary": "只读审计，未修改文件。",
+      "reviewFindings": [
+        "blocker: infra/.gitkeep - 没有 Dockerfile、Compose、systemd 或 Debian 12 部署定义。",
+        "blocker: apps/server/src/app.ts:75-90 - Server 不发布 apps/web/dist，生产静态站点和 SPA fallback 缺失。",
+        "blocker: apps/web/vite.config.ts:6-13 - 只有开发 Vite proxy，不能作为生产静态资源/反向代理方案。",
+        "blocker: infra/.gitkeep - 缺少 Caddy/Nginx、TLS 和 Socket.IO WebSocket 代理配置。",
+        "blocker: infra/.gitkeep - 缺少进程管理、自动重启、备份和恢复实现。",
+        "blocker: apps/server/package.json:9-10 - migrate 依赖 devDependency tsx，不适用于仅安装 production dependencies 的运行镜像。",
+        "blocker: apps/server/src/db/migrate.ts:4-60 - 迁移没有版本记录、迁移锁、事务和回滚/兼容策略。",
+        "high: apps/server/src/app.ts:83-85 - 健康检查无条件返回成功且不探测 Redis/PostgreSQL/schema/workers。",
+        "high: apps/server/src/bootstrap.ts:64-68 - PostgreSQL Pool 惰性创建，数据库不可用时仍可能启动监听。",
+        "high: apps/server/src/config/config.ts:11,29-35 - production 不校验 allowed origins，默认仍为 localhost。",
+        "high: docs/ARCHITECTURE.md:176-178 - 文档明确真实 Redis/PostgreSQL 集成尚未验证。",
+        "medium: apps/server/src/bootstrap.ts:64-68 - 使用三个无容量和超时配置的独立 PostgreSQL Pool。",
+        "medium: apps/server/src/index.ts:7-9 - Node 未显式绑定 loopback，必须由防火墙或容器网络阻止公网访问。",
+        "low: apps/server/src/app.ts:75-81 - API 根响应仍返回 localhost 前端地址。"
+      ],
+      "manualNotes": "任务指定的 plan.md 与 progress.md 不存在；审计依据实际仓库、AGENTS.md、docs/ARCHITECTURE.md 和 docs/DEVELOPMENT.md。仓库当前无提交且全部文件未跟踪，因此无法进行基于历史 diff 的审查。"
+    }
+  },
+  "transcriptPath": "D:\\iverins_workspace\\game\\pokewar-final\\.pi-subagents\\artifacts\\91f712e6-eafe-4e73-baa2-c469913b4149_reviewer_1_transcript.jsonl",
+  "skills": [],
+  "timestamp": 1785236601948
+}
