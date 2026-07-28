@@ -198,8 +198,15 @@ a:focus-visible {
   padding: 22px clamp(16px, 2.4vw, 36px) 18px;
   background-color: var(--table);
   background-image:
-    repeating-linear-gradient(90deg, transparent 0 4px, rgba(255, 255, 255, 0.018) 4px 5px),
-    repeating-linear-gradient(0deg, transparent 0 6px, rgba(0, 0, 0, 0.025) 6px 7px);
+    linear-gradient(rgba(198, 161, 91, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 161, 91, 0.055) 1px, transparent 1px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(255, 255, 255, 0.016) 5px 6px),
+    repeating-linear-gradient(0deg, transparent 0 7px, rgba(0, 0, 0, 0.022) 7px 8px);
+  background-size:
+    48px 48px,
+    48px 48px,
+    auto,
+    auto;
 }
 .home-table-lines {
   position: absolute;
@@ -213,11 +220,16 @@ a:focus-visible {
   position: absolute;
   width: min(52vw, 760px);
   aspect-ratio: 1;
-  border: 1px solid rgba(246, 242, 232, 0.07);
+  border: 1px solid rgba(246, 242, 232, 0.09);
   border-radius: 50%;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  box-shadow:
+    inset 0 0 0 46px rgba(198, 161, 91, 0.025),
+    inset 0 0 0 47px rgba(198, 161, 91, 0.09),
+    inset 0 0 0 138px rgba(35, 40, 11, 0.025),
+    inset 0 0 0 139px rgba(198, 161, 91, 0.07);
 }
 .home-layout {
   width: min(100%, 1600px);
@@ -530,6 +542,14 @@ a:focus-visible {
 .center-title > svg {
   color: var(--gold);
 }
+.center-kicker {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-command);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
 .center-title h1 {
   margin: 8px 0 6px;
   font:
@@ -545,11 +565,11 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 700;
 }
-.suit-orbit {
+.tactical-orbit {
   position: absolute;
   left: 50%;
   top: 43%;
-  border: 1px solid rgba(239, 187, 71, 0.28);
+  border: 1px solid rgba(198, 161, 91, 0.28);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -559,104 +579,109 @@ a:focus-visible {
   aspect-ratio: 1;
   animation: orbit-spin 32s linear infinite;
 }
-.orbit-outer span {
-  position: absolute;
-  font-size: 22px;
-  color: rgba(246, 242, 232, 0.35);
-}
-.orbit-outer span:nth-child(1) {
-  left: 50%;
-  top: -13px;
-}
-.orbit-outer span:nth-child(2) {
-  right: -9px;
-  top: 50%;
-  color: rgba(216, 74, 74, 0.55);
-}
-.orbit-outer span:nth-child(3) {
-  left: 50%;
-  bottom: -13px;
-  color: rgba(216, 74, 74, 0.55);
-}
-.orbit-outer span:nth-child(4) {
-  left: -9px;
-  top: 50%;
-}
 .orbit-inner {
   width: min(30vw, 380px);
   aspect-ratio: 1;
-  border-color: rgba(246, 242, 232, 0.12);
+  border-style: dashed;
+  border-color: rgba(246, 242, 232, 0.15);
   animation: orbit-spin-reverse 24s linear infinite;
 }
-.orbit-inner i {
+.orbit-axis {
   position: absolute;
-  width: 7px;
-  height: 7px;
-  background: var(--gold);
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--color-command);
+  background: var(--color-table-deep);
   transform: rotate(45deg);
 }
-.orbit-inner i:nth-child(1) {
-  left: 13%;
-  top: 13%;
+.axis-north {
+  left: calc(50% - 6px);
+  top: -6px;
 }
-.orbit-inner i:nth-child(2) {
-  right: 13%;
-  top: 13%;
+.axis-east {
+  right: -6px;
+  top: calc(50% - 6px);
 }
-.orbit-inner i:nth-child(3) {
-  right: 13%;
-  bottom: 13%;
+.axis-south {
+  left: calc(50% - 6px);
+  bottom: -6px;
 }
-.orbit-inner i:nth-child(4) {
-  left: 13%;
-  bottom: 13%;
+.axis-west {
+  left: -6px;
+  top: calc(50% - 6px);
 }
-.orbit-card {
+.orbit-inner span {
   position: absolute;
-  width: 72px;
-  aspect-ratio: 5/7;
-  padding: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-command);
+}
+.orbit-inner span:nth-child(1) {
+  left: 13%;
+  top: 13%;
+}
+.orbit-inner span:nth-child(2) {
+  right: 13%;
+  top: 13%;
+}
+.orbit-inner span:nth-child(3) {
+  right: 13%;
+  bottom: 13%;
+}
+.orbit-inner span:nth-child(4) {
+  left: 13%;
+  bottom: 13%;
+}
+.faction-mark {
+  position: absolute;
+  z-index: 5;
+  width: 76px;
+  min-height: 76px;
   display: grid;
-  align-content: space-between;
-  background: var(--paper);
-  color: var(--ink);
-  border: 1px solid #fff;
-  box-shadow: 5px 7px 0 rgba(4, 18, 13, 0.38);
-  font:
-    900 17px/1 Arial Black,
-    sans-serif;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+  border: 1px solid var(--color-command);
+  background: rgba(35, 40, 11, 0.9);
+  color: var(--color-command);
+  box-shadow: 5px 5px 0 rgba(4, 18, 13, 0.38);
   animation: card-float 4.8s ease-in-out infinite;
 }
-.orbit-card i {
-  justify-self: end;
-  font-style: normal;
-  font-size: 24px;
+.faction-mark::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid currentColor;
+  opacity: 0.35;
 }
-.card-two,
-.card-three {
-  color: #b82e3c;
+.faction-mark b {
+  font-size: 10px;
 }
-.card-one {
-  left: 9%;
+.faction-vanguard {
+  left: 8%;
   top: 20%;
-  transform: rotate(-13deg);
+  transform: rotate(-5deg);
 }
-.card-two {
-  right: 9%;
+.faction-guard {
+  right: 8%;
   top: 17%;
-  transform: rotate(11deg);
+  color: #59d6d1;
+  transform: rotate(4deg);
   animation-delay: -1.1s;
 }
-.card-three {
-  left: 13%;
-  bottom: 25%;
-  transform: rotate(9deg);
+.faction-command {
+  left: 12%;
+  bottom: 24%;
+  color: #ffc247;
+  transform: rotate(3deg);
   animation-delay: -2.2s;
 }
-.card-four {
-  right: 12%;
-  bottom: 23%;
-  transform: rotate(-10deg);
+.faction-banner {
+  right: 11%;
+  bottom: 22%;
+  color: #ff6b78;
+  transform: rotate(-4deg);
   animation-delay: -3.3s;
 }
 .match-controls {
@@ -1680,24 +1705,29 @@ a:focus-visible {
   .orbit-inner {
     width: 240px;
   }
-  .orbit-card {
-    width: 54px;
+  .faction-mark {
+    width: 58px;
+    min-height: 58px;
   }
-  .card-one {
-    left: 3%;
+  .faction-mark svg {
+    width: 19px;
+    height: 19px;
+  }
+  .faction-vanguard {
+    left: 2%;
     top: 19%;
   }
-  .card-two {
-    right: 3%;
+  .faction-guard {
+    right: 2%;
     top: 18%;
   }
-  .card-three {
-    left: 5%;
-    bottom: 28%;
-  }
-  .card-four {
-    right: 5%;
+  .faction-command {
+    left: 4%;
     bottom: 27%;
+  }
+  .faction-banner {
+    right: 4%;
+    bottom: 26%;
   }
   .match-controls {
     width: 88%;
@@ -1842,12 +1872,12 @@ a:focus-visible {
     animation: none !important;
   }
   .deal-deck,
-  .suit-orbit,
-  .orbit-card,
+  .tactical-orbit,
+  .faction-mark,
   .identity-loading > i {
     animation: none !important;
   }
-  .orbit-card {
+  .faction-mark {
     margin-top: 0 !important;
   }
   .hand-card.is-fused::after,

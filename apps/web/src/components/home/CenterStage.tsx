@@ -1,12 +1,12 @@
 import type { GameMode, MatchSize, MatchmakingState } from '@pokewar/protocol';
-import { Search, Spade, X } from 'lucide-react';
+import { Compass, Crown, Flag, Search, Shield, Swords, X } from 'lucide-react';
 import { ModeSelector } from '../lobby/ModeSelector.js';
 
-const ORBIT_CARDS = [
-  { suit: '♠', rank: 'K', className: 'orbit-card card-one' },
-  { suit: '♥', rank: 'A', className: 'orbit-card card-two' },
-  { suit: '♦', rank: '7', className: 'orbit-card card-three' },
-  { suit: '♣', rank: 'Q', className: 'orbit-card card-four' },
+const FACTION_MARKS = [
+  { label: '先锋', icon: Swords, className: 'faction-mark faction-vanguard' },
+  { label: '守卫', icon: Shield, className: 'faction-mark faction-guard' },
+  { label: '统帅', icon: Crown, className: 'faction-mark faction-command' },
+  { label: '军旗', icon: Flag, className: 'faction-mark faction-banner' },
 ];
 
 export function CenterStage({
@@ -44,28 +44,29 @@ export function CenterStage({
       : '正在扩大评分范围并寻找同规模玩家';
   return (
     <section className="center-stage" aria-labelledby="home-title">
-      <div className="suit-orbit orbit-outer" aria-hidden="true">
-        <span>♠</span>
-        <span>♥</span>
-        <span>♦</span>
-        <span>♣</span>
+      <div className="tactical-orbit orbit-outer" aria-hidden="true">
+        <i className="orbit-axis axis-north" />
+        <i className="orbit-axis axis-east" />
+        <i className="orbit-axis axis-south" />
+        <i className="orbit-axis axis-west" />
       </div>
-      <div className="suit-orbit orbit-inner" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
+      <div className="tactical-orbit orbit-inner" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
       </div>
-      {ORBIT_CARDS.map((card) => (
-        <span key={card.className} className={card.className} aria-hidden="true">
-          <b>{card.rank}</b>
-          <i>{card.suit}</i>
+      {FACTION_MARKS.map(({ label, icon: Icon, className }) => (
+        <span key={label} className={className} aria-hidden="true">
+          <Icon size={24} />
+          <b>{label}</b>
         </span>
       ))}
       <div className="center-title">
-        <Spade size={22} aria-hidden="true" />
-        <h1 id="home-title">POKEWAR</h1>
-        <p>来扑克一把</p>
+        <Compass size={22} aria-hidden="true" />
+        <span className="center-kicker">TACTICAL CARD TABLE</span>
+        <h1 id="home-title">FateDeck</h1>
+        <p>选择阵型，集结将士，决定牌桌命运</p>
       </div>
       <div className="match-controls">
         <ModeSelector

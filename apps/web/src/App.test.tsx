@@ -196,13 +196,13 @@ beforeEach(() => {
   mocks.getLeaderboard.mockResolvedValue({ mode: 'normal', entries: [], self: null });
 });
 
-describe('PokeWar home', () => {
+describe('FateDeck home', () => {
   it('automatically establishes an immutable guest and renders the three home areas', async () => {
     render(<App />);
     expect(await screen.findByText('静默星轨#A001')).toBeInTheDocument();
     expect(mocks.ensureGuestSession).toHaveBeenCalledTimes(1);
     expect(screen.queryByLabelText('你的昵称')).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'POKEWAR' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'FateDeck' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '标准战天梯' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '私人房间' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '开始匹配' })).not.toBeDisabled();
@@ -218,7 +218,7 @@ describe('PokeWar home', () => {
     expect(screen.getByLabelText('公开昵称称号')).toHaveValue('旅者');
     await user.click(screen.getByRole('button', { name: '关闭账号窗口' }));
     await user.click(screen.getByRole('button', { name: '打开游戏规则' }));
-    expect(screen.getByRole('dialog', { name: 'PokeWar 规则' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'FateDeck 规则' })).toBeInTheDocument();
   });
 
   it('submits reviewed registration choices and switches to account state', async () => {

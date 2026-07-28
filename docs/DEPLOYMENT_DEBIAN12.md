@@ -4,7 +4,7 @@
 
 ```text
 Internet -> Nginx (HTTPS / 静态网页 / WebSocket)
-                 -> Node.js PokeWar (127.0.0.1:3000)
+                 -> Node.js FateDeck (127.0.0.1:3000)
                  -> Redis (127.0.0.1:6379)
                  -> PostgreSQL (127.0.0.1:5432)
 ```

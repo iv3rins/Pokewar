@@ -152,7 +152,7 @@ export function App() {
       },
       onMatchmaking(state) {
         setMatchmaking(state);
-        document.title = state.status === 'confirming' ? '【匹配成功】PokeWar' : 'PokeWar';
+        document.title = state.status === 'confirming' ? '【匹配成功】FateDeck' : 'FateDeck';
       },
     });
     socketRef.current = socket;
@@ -395,7 +395,7 @@ export function App() {
           ) : (
             <section className="identity-loading" aria-live="polite">
               <span className="brand-mark" aria-hidden="true">
-                PW
+                FD
               </span>
               <h1>{identityFailed ? '访客身份创建失败' : '正在准备牌桌'}</h1>
               <p>{error ?? message}</p>

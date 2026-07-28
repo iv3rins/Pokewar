@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# PokeWar single-server installer for a clean Debian 12 host.
+# FateDeck single-server installer for a clean Debian 12 host.
 # Run from the repository root as root. Override defaults with environment variables.
 DOMAIN="${DOMAIN:-game.n1komajor.top}"
 LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL:-iverins.user@gmail.com}"
@@ -16,8 +16,8 @@ ENV_FILE="/etc/pokewar/pokewar.env"
 SERVICE_FILE="/etc/systemd/system/pokewar.service"
 NGINX_FILE="/etc/nginx/sites-available/pokewar"
 
-log() { printf '\n\033[1;32m[PokeWar]\033[0m %s\n' "$*"; }
-fail() { printf '\n\033[1;31m[PokeWar] ERROR:\033[0m %s\n' "$*" >&2; exit 1; }
+log() { printf '\n\033[1;32m[FateDeck]\033[0m %s\n' "$*"; }
+fail() { printf '\n\033[1;31m[FateDeck] ERROR:\033[0m %s\n' "$*" >&2; exit 1; }
 
 [[ "$(id -u)" -eq 0 ]] || fail "请使用 root 运行：sudo bash scripts/deploy-debian12.sh"
 [[ -f "$SOURCE_DIR/pnpm-lock.yaml" && -f "$SOURCE_DIR/apps/server/package.json" ]] || fail "请在完整项目目录中运行脚本"
@@ -107,7 +107,7 @@ setfacl -R -m u:www-data:rX "$APP_DIR/apps/web/dist"
 log "配置 systemd 服务"
 cat > "$SERVICE_FILE" <<EOF
 [Unit]
-Description=PokeWar authoritative game server
+Description=FateDeck authoritative game server
 After=network-online.target redis-server.service postgresql.service
 Wants=network-online.target
 Requires=redis-server.service postgresql.service
@@ -197,7 +197,7 @@ if [[ "$ENABLE_TLS" == "1" ]]; then
 fi
 
 log "执行上线自检"
-systemctl is-active --quiet pokewar || { journalctl -u pokewar -n 80 --no-pager; fail "PokeWar 服务启动失败"; }
+systemctl is-active --quiet pokewar || { journalctl -u pokewar -n 80 --no-pager; fail "FateDeck 服务启动失败"; }
 curl --fail --silent --show-error "http://127.0.0.1:$APP_PORT/api/health" >/dev/null
 if [[ "$ENABLE_TLS" == "1" ]]; then
   curl --fail --silent --show-error "https://$DOMAIN/healthz" >/dev/null

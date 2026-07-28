@@ -24,11 +24,11 @@ export function BrandHeader({
     <header className="lobby-header">
       <div className="brand-lockup">
         <span className="brand-mark" aria-hidden="true">
-          PW
+          FD
         </span>
         <div>
-          <strong>POKEWAR</strong>
-          <span>在线竞技牌桌</span>
+          <strong>FateDeck</strong>
+          <span>在线战术牌桌</span>
         </div>
       </div>
       <div className="header-actions">

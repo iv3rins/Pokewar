@@ -33,7 +33,7 @@ export function RulesDrawer({
         <header>
           <div>
             <span>RULEBOOK</span>
-            <h2 id="rules-title">PokeWar 规则</h2>
+            <h2 id="rules-title">FateDeck 规则</h2>
           </div>
           <button
             ref={closeRef}
