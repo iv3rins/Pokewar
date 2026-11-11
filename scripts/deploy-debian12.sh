@@ -3,8 +3,10 @@ set -Eeuo pipefail
 
 # FateDeck single-server installer for a clean Debian 12 host.
 # Run from the repository root as root. Override defaults with environment variables.
-DOMAIN="${DOMAIN:-game.n1komajor.top}"
-LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL:-iverins.user@gmail.com}"
+DOMAIN="${DOMAIN:-game.example.com}"
+# Let's Encrypt 需要有效的联系邮箱，请自行提供：
+#   LETSENCRYPT_EMAIL=you@example.com ./scripts/deploy-debian12.sh
+LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL:?请设置 LETSENCRYPT_EMAIL 环境变量}"
 APP_USER="${APP_USER:-pokewar}"
 APP_DIR="${APP_DIR:-/opt/pokewar}"
 APP_PORT="${APP_PORT:-3000}"

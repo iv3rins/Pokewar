@@ -13,7 +13,7 @@ Internet -> Nginx (HTTPS / 静态网页 / WebSocket)
 
 ## 1. 部署前准备
 
-1. 将域名 `game.n1komajor.top` 的 A/AAAA 记录解析到服务器公网地址。
+1. 将域名 `game.example.com` 的 A/AAAA 记录解析到服务器公网地址。
 2. 云厂商安全组和服务器防火墙允许 TCP `22`、`80`、`443`。
 3. Redis、PostgreSQL 和 Node 的 `3000` 端口**不要向公网开放**。
 4. 将完整项目上传或克隆到服务器，例如 `/root/pokewar-final`。
@@ -22,7 +22,7 @@ Internet -> Nginx (HTTPS / 静态网页 / WebSocket)
 验证 DNS：
 
 ```bash
-getent ahosts game.n1komajor.top
+getent ahosts game.example.com
 ```
 
 ## 2. 一键部署
@@ -31,8 +31,8 @@ getent ahosts game.n1komajor.top
 
 ```bash
 cd /root/pokewar-final
-sudo env -u APP_DIR DOMAIN=game.n1komajor.top \
-  LETSENCRYPT_EMAIL=iverins.user@gmail.com \
+sudo env -u APP_DIR DOMAIN=game.example.com \
+  LETSENCRYPT_EMAIL=you@example.com \
   bash scripts/deploy-debian12.sh
 ```
 
@@ -42,7 +42,7 @@ sudo env -u APP_DIR DOMAIN=game.n1komajor.top \
 sudo env -u APP_DIR bash scripts/deploy-debian12.sh
 ```
 
-完成后访问：<https://game.n1komajor.top>
+完成后访问：<https://game.example.com>
 
 > 脚本可重复执行用于更新发布。数据库密码和 `GUEST_SECRET` 会从现有 `/etc/pokewar/pokewar.env` 自动复用，避免更新后数据库连接失败或访客 Cookie 失效。
 
@@ -66,7 +66,7 @@ systemctl status redis-server postgresql --no-pager
 curl --fail http://127.0.0.1:3000/api/health
 
 # 外部 HTTPS 健康检查
-curl --fail https://game.n1komajor.top/healthz
+curl --fail https://game.example.com/healthz
 ```
 
 环境变量保存在 `/etc/pokewar/pokewar.env`，权限为 root 与 `pokewar` 服务组可读。不要提交或公开此文件。
@@ -83,7 +83,7 @@ sudo env -u APP_DIR bash scripts/deploy-debian12.sh
 脚本将重新同步代码、安装锁文件依赖、执行幂等迁移、构建并重启服务。更新后检查：
 
 ```bash
-curl --fail https://game.n1komajor.top/healthz
+curl --fail https://game.example.com/healthz
 journalctl -u pokewar -n 100 --no-pager
 ```
 
